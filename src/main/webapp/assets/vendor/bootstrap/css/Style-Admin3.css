@@ -1,0 +1,155 @@
+body {
+  background: #f4f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.sidebar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  font-weight: 600;
+  font-size: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.sidebar .brand .logo-box {
+  width: 22px;
+  height: 22px;
+  background: #d9dde3;
+  border-radius: 4px;
+}
+.sidebar .section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #9aa0a6;
+  letter-spacing: .04em;
+  padding: 16px 20px 6px;
+}
+.sidebar .nav-link {
+  color: #4b5563;
+  padding: 7px 20px;
+  font-size: 13.5px;
+  border-left: 3px solid transparent;
+}
+.sidebar .nav-link:hover {
+  background: #f8f9fa;
+}
+.sidebar .nav-link.active {
+  color: #111827;
+  font-weight: 600;
+  border-left-color: #d4a017;
+  background: #fdf8ee;
+}
+.main-content {
+  margin-left: 220px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 32px;
+}
+.topbar .page-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.topbar .admin-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  color: #374151;
+}
+.avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #d9dde3;
+}
+.content-area {
+  padding: 28px 32px;
+}
+.section-label {
+  font-size: 14.5px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0;
+  flex-wrap: wrap;
+}
+.filter-bar .label {
+  font-size: 13px;
+  color: #6b7280;
+  margin-right: 4px;
+}
+.btn-filter {
+  font-size: 13px;
+  padding: 5px 14px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  white-space: nowrap;
+}
+.btn-filter.active {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+.search-box {
+  font-size: 13px;
+  padding: 5px 12px;
+  max-width: 220px;
+}
+table.lav-table {
+  margin-bottom: 0;
+  font-size: 13.5px;
+}
+table.lav-table thead th {
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 12.5px;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 0;
+  white-space: nowrap;
+}
+table.lav-table tbody td {
+  padding: 12px 0;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f2f4;
+  color: #374151;
+}
+table.lav-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.badge-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+.badge-livre {
+  background: #d6e4ff;
+  color: #1d4ed8;
+}
+.badge-recupere {
+  background: #ece4fb;
+  color: #6b2fb3;
+}
