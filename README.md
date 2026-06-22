@@ -78,7 +78,7 @@ CleanCareClothes/
    MOT_DE_PASSE = ""
    ```
 
-## Lancer le projet sans IntelliJ (autre IDE / ligne de commande)
+## Lancement du projet 
 
 Le projet est packagé en **WAR** ; il faut donc le compiler avec Maven puis le déployer
 dans un conteneur de servlets (Tomcat).
