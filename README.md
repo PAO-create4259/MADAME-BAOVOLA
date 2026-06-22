@@ -30,9 +30,24 @@ CleanCareClothes/
         │
         └── webapp/                 # Ressources web
             ├── index.jsp
-            └── WEB-INF/
-                └── web.xml         # Descripteur de déploiement
+            ├── WEB-INF/
+            │   └── web.xml         # Descripteur de déploiement
+            └── assets/             # Ressources statiques (servies au navigateur)
+                ├── css/            # Feuilles de style perso
+                │   └── style.css
+                ├── js/             # Scripts JavaScript perso
+                │   └── script.js
+                ├── img/            # Images
+                └── vendor/         # Librairies tierces
+                    └── bootstrap/  # Bootstrap (CSS + JS)
+                        ├── css/
+                        └── js/
 ```
+
+> **Note :** les fichiers statiques (CSS, JS, Bootstrap, images) se placent dans
+> `src/main/webapp/assets/` et **jamais** dans `WEB-INF/` (dossier non accessible
+> depuis le navigateur). On les référence dans les JSP via
+> `${pageContext.request.contextPath}/assets/...`.
 
 ## Prérequis
 
