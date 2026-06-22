@@ -30,6 +30,11 @@ CleanCareClothes/
         │
         └── webapp/                 # Ressources web
             ├── index.jsp
+            ├── pages/              # Pages JSP
+            │   ├── admin/          # Pages réservées à l'administrateur
+            │   │   └── accueil-admin.jsp
+            │   └── client/         # Pages côté client
+            │       └── accueil-client.jsp
             ├── WEB-INF/
             │   └── web.xml         # Descripteur de déploiement
             └── assets/             # Ressources statiques (servies au navigateur)
