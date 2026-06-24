@@ -352,3 +352,4 @@ CREATE TABLE depense
     CONSTRAINT fk_categorie_depense FOREIGN KEY (id_categorie)
         REFERENCES categorie_depense (id_categorie)
 );
+

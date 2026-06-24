@@ -1,0 +1,232 @@
+/* ============================================================
+   STYLE-ADMIN.CSS
+   Remplace : Style-Admin1, Style-Admin2, Style-Admin3, pageAdmin4, 5, 6 et style7a
+   ============================================================ */
+
+body {
+    background: #f4f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: #fff;
+    border-right: 1px solid #e5e7eb;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+.sidebar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+.sidebar .brand .logo-box {
+    width: 22px;
+    height: 22px;
+    background: #d9dde3;
+    border-radius: 4px;
+}
+.sidebar .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9aa0a6;
+    letter-spacing: .04em;
+    padding: 16px 20px 6px;
+    margin-top: 10px;
+}
+.sidebar .nav-link {
+    display: block;
+    color: #4b5563;
+    padding: 10px 20px;
+    font-size: 13.5px;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.sidebar .nav-link:hover {
+    background: #f8f9fa;
+}
+.sidebar .nav-link.active {
+    color: #111827;
+    font-weight: 600;
+    border-left-color: #d4a017;
+    background: #fdf8ee;
+}
+
+/* --- Layout Principal --- */
+.main-content {
+    margin-left: 220px;
+}
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 14px 32px;
+}
+.topbar .page-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.topbar .admin-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: #374151;
+    font-weight: 500;
+}
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #d9dde3;
+}
+.content-area {
+    padding: 28px 32px;
+}
+.section-label {
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #111827;
+}
+
+/* --- Filtres & Inputs --- */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.filter-bar .label {
+    font-size: 13px;
+    color: #6b7280;
+    margin-right: 4px;
+    font-weight: 500;
+}
+.btn-filter {
+    font-size: 13px;
+    padding: 6px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.btn-filter:hover {
+    background: #f3f4f6;
+}
+.btn-filter.active {
+    background: #1f2937;
+    color: #fff;
+    border-color: #1f2937;
+}
+.form-control.search-box {
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    outline: none;
+}
+.form-control.search-box:focus {
+    border-color: #1f2937;
+}
+
+/* --- Cartes & Tableaux --- */
+.card-table {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+table.lav-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-bottom: 0;
+}
+table.lav-table thead th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-weight: 600;
+    font-size: 12.5px;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 14px 16px;
+    text-align: left;
+}
+table.lav-table tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f2f4;
+    color: #374151;
+}
+table.lav-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- Badges de Statut --- */
+.badge-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.badge-attente { background: #fdecc8; color: #92660b; }
+.badge-cours   { background: #d6e4ff; color: #1d4ed8; }
+.badge-termine { background: #d7f4df; color: #1d7a3e; }
+.badge-annule  { background: #fdeaea; color: #c0392b; }
+.badge-livre   { background: #e0f2fe; color: #0284c7; }
+.badge-recupere{ background: #ece4fb; color: #6b2fb3; }
+
+/* --- Boutons d'Action --- */
+.btn-recuperer {
+    background: #e8b339;
+    color: #5c4400;
+    border: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-recuperer:hover { background: #d9a52b; }
+
+.btn-action {
+    font-size: 12.5px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    margin-right: 4px;
+    cursor: pointer;
+}
+.btn-laver    { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+.btn-terminer { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+.btn-annuler  { background: #fdeded; border: 1px solid #f5c2c2; color: #c0392b; }
+
+.info-note {
+    font-size: 12.5px;
+    color: #6b7280;
+    padding: 8px 0 0 2px;
+}
