@@ -142,11 +142,11 @@
 
         <nav class="d-none d-lg-flex align-items-center main-nav">
           <a href="page1_accueil.html" class="nav-link">Accueil</a>
-          <a href="page8_tarifs.html" class="nav-link">Tarifs</a>
+          <a href="tarifs-client.jsp" class="nav-link">Tarifs</a>
           <a href="page9_profil.html" class="nav-icon-btn mx-2" style="background:var(--color-blue-dark); color:var(--color-cream);" aria-label="Profil" aria-current="page">
             <i class="bi bi-person-fill"></i>
           </a>
-          <a href="page10_apropos.html" class="nav-link">À propos</a>
+          <a href="apropos-client.jsp" class="nav-link">À propos</a>
         </nav>
 
         <div class="d-flex align-items-center gap-2">
@@ -166,9 +166,9 @@
     </div>
     <div class="offcanvas-body">
       <a href="page1_accueil.html" class="nav-link d-block py-2 fs-5">Accueil</a>
-      <a href="page8_tarifs.html" class="nav-link d-block py-2 fs-5">Tarifs</a>
+      <a href="tarifs-client.jsp" class="nav-link d-block py-2 fs-5">Tarifs</a>
       <a href="page9_profil.html" class="nav-link d-block py-2 fs-5 active">Profil</a>
-      <a href="page10_apropos.html" class="nav-link d-block py-2 fs-5">À propos</a>
+      <a href="apropos-client.jsp" class="nav-link d-block py-2 fs-5">À propos</a>
       <a href="#" class="btn-login d-inline-flex mt-3">Déconnexion</a>
     </div>
   </div>
@@ -373,9 +373,9 @@
           <h6>Navigation</h6>
           <div class="d-flex flex-column gap-2">
             <a href="page1_accueil.html">Accueil</a>
-            <a href="page8_tarifs.html">Tarifs</a>
+            <a href="tarifs-client.jsp">Tarifs</a>
             <a href="page9_profil.html">Profil</a>
-            <a href="page10_apropos.html">À propos</a>
+            <a href="apropos-client.jsp">À propos</a>
           </div>
         </div>
         <div class="col-6 col-lg-3">
