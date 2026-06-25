@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 @WebServlet(name = "AdminController", urlPatterns = {"/admin/*"})
 public class AdminController extends HttpServlet {
 
-    // On déplace la liste blanche ici pour sécuriser côté serveur
     private static final List<String> PAGES_AUTORISEES = Arrays.asList(
             "dashboard", "clients", "depenses", "statistiques",
             "tarifs", "suivi", "historique-lavage", "livraisons", "historique-livraison"
@@ -26,23 +25,19 @@ public class AdminController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/login");
             return;
         }
-        // 1. Récupérer la fin de l'URL (ex: "/clients" devient "clients")
         String pathInfo = request.getPathInfo();
-        String page = "dashboard"; // Page par défaut
+        String page = "dashboard";
 
         if (pathInfo != null && pathInfo.length() > 1) {
             page = pathInfo.substring(1);
         }
 
-        // 2. Vérifier si la page demandée est dans la liste blanche
         if (!PAGES_AUTORISEES.contains(page)) {
             page = "dashboard";
         }
 
-        // 3. Envoyer la variable "page" à la vue (layout.jsp)
         request.setAttribute("page", page);
 
-        // 4. Faire suivre la requête vers le fichier layout.jsp physique
         this.getServletContext().getRequestDispatcher("/pages/admin/layout.jsp").forward(request, response);
     }
 }

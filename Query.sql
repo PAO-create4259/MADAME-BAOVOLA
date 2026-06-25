@@ -1,8 +1,8 @@
 -- Création de la base de données
--- CREATE DATABASE cleancareclothes;
+CREATE DATABASE cleancareclothes;
 
 -- Connexion à la base de données
--- \c cleancareclothes;
+\c cleancareclothes;
 
 -- ==============================================================================
 -- 1. TABLES INDÉPENDANTES (Sans clé étrangère)
