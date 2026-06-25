@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet(name = "AdminController", urlPatterns = {"/admin/*"})
 public class AdminController extends HttpServlet {
@@ -20,6 +21,11 @@ public class AdminController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("utilisateur") == null) {
+            response.sendRedirect(request.getContextPath() + "/admin/login");
+            return;
+        }
         // 1. Récupérer la fin de l'URL (ex: "/clients" devient "clients")
         String pathInfo = request.getPathInfo();
         String page = "dashboard"; // Page par défaut

@@ -1,6 +1,9 @@
 package dao;
 
 import model.Utilisateur;
+import utils.DatabaseConnection;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,5 +59,24 @@ public class UtilisateurDAO extends BaseDAO<Utilisateur> {
         ps.setString(4, objet.getRole());
         ps.setBoolean(5, objet.isActif());
         ps.setString(6, objet.getIdUtilisateur());
+    }
+
+    public Utilisateur getByUsername(String username) throws SQLException {
+        Utilisateur utilisateur = null;
+        String sql = "SELECT * FROM " + getNomTable() + " WHERE identifiant = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    utilisateur = mapResultSet(rs);
+                }
+            }
+        }
+
+        return utilisateur;
     }
 }

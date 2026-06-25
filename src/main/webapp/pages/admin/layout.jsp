@@ -1,4 +1,8 @@
+<%@ page import="model.Utilisateur" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
+%>
 <%-- La variable "page" est envoyée par le AdminController --%>
 <!DOCTYPE html>
 <html lang="fr">
@@ -8,6 +12,7 @@
     <title>CleanCare Backoffice</title>
 
     <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/icons/bootstrap-icons.min.css" rel="stylesheet">
     <%-- Remplacer style-admin.css par Style-Admin1.css si tu n'as pas encore créé le fichier fusionné --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/Style-Admin1.css">
     <script src="${pageContext.request.contextPath}/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
@@ -15,7 +20,7 @@
 <body>
 
 <!-- Sidebar -->
-<div class="sidebar">
+<div class="sidebar" style="display: flex; flex-direction: column; height: 100vh;">
     <div class="brand">
         <div class="logo-box"></div>
         <span>CleanCare</span>
@@ -37,6 +42,27 @@
         <a href="${pageContext.request.contextPath}/admin/statistiques" class="nav-link ${page == 'statistiques' ? 'active' : ''}">Statistiques</a>
         <a href="${pageContext.request.contextPath}/admin/tarifs" class="nav-link ${page == 'tarifs' ? 'active' : ''}">Tarifs</a>
     </nav>
+
+    <div style="margin-top: auto;"></div>
+
+    <div style="padding: 20px; border-top: 1px solid #e5e7eb;">
+
+        <a href="${pageContext.request.contextPath}/admin/logout" style="display: flex; align-items: center; gap: 10px; color: #c0392b; text-decoration: none; font-weight: 600; font-size: 13.5px; margin-bottom: 20px; transition: 0.2s;">
+            <i class="bi bi-box-arrow-left" style="font-size: 18px;"></i>
+            Déconnexion
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: #1f2937; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div style="line-height: 1.3;">
+                <div style="font-weight: 700; font-size: 14px; color: #111827;"><%= utilisateur.getNom() %></div>
+                <div style="font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;"><%= utilisateur.getRole() %></div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <!-- Main content -->

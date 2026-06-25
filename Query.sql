@@ -1,8 +1,8 @@
 -- Création de la base de données
-CREATE DATABASE cleancareclothes;
+-- CREATE DATABASE cleancareclothes;
 
 -- Connexion à la base de données
-\c cleancareclothes;
+-- \c cleancareclothes;
 
 -- ==============================================================================
 -- 1. TABLES INDÉPENDANTES (Sans clé étrangère)
@@ -123,7 +123,23 @@ CREATE TRIGGER trigger_next_id_utilisateur
     FOR EACH ROW
 EXECUTE FUNCTION next_id_utilisateur_par_role();
 
+INSERT INTO utilisateur(nom, identifiant, mot_de_passe, role)
+VALUES('Tony Mahefa', 'dahimatsu', 'admin123', 'Administrateur');
 
+INSERT INTO utilisateur (nom, identifiant, mot_de_passe, role, actif)
+VALUES ('Rakoto Jean', 'gerant_jean', 'gerant123', 'Gérant', true);
+
+-- Insertion du Caissier
+INSERT INTO utilisateur (nom, identifiant, mot_de_passe, role, actif)
+VALUES ('Rasoa Marie', 'caisse_marie', 'caisse123', 'Caissier', true);
+
+-- Insertion du Livreur
+INSERT INTO utilisateur (nom, identifiant, mot_de_passe, role, actif)
+VALUES ('Andry Solo', 'livreur_andry', 'livreur123', 'Livreur', true);
+
+-- Insertion du Laveur
+INSERT INTO utilisateur (nom, identifiant, mot_de_passe, role, actif)
+VALUES ('Tovo Naina', 'laveur_tovo', 'laveur123', 'Laveur', true);
 -- ==============================================================================
 -- 2. TABLES DÉPENDANTES (Avec clés étrangères)
 -- ==============================================================================
@@ -352,4 +368,6 @@ CREATE TABLE depense
     CONSTRAINT fk_categorie_depense FOREIGN KEY (id_categorie)
         REFERENCES categorie_depense (id_categorie)
 );
+
+SELECT * FROM utilisateur;
 

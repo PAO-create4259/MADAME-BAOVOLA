@@ -3,10 +3,6 @@
 
 <div class="topbar">
     <h1 class="page-title"><i class="bi bi-tags"></i> Modification des tarifs</h1>
-    <div class="admin-area">
-        <span>Admin</span>
-        <div class="avatar-circle"></div>
-    </div>
 </div>
 
 <div class="content-area">
