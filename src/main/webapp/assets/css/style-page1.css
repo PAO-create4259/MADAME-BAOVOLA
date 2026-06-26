@@ -6,7 +6,7 @@ body {
 /* Fond de page */
 .hero {
     height: 100vh;
-    background-image: url("../imageCSS/image/lavage.png");
+    background-image: url("imageCSS/image/lavage.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -40,12 +40,11 @@ body {
     color: #D4AF37 !important;
 }
 
-/* Logo accueil */
+/* Logo page accueil */
 .logo-container {
     position: relative;
     z-index: 2;
     height: calc(100vh - 56px);
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,31 +86,52 @@ body {
 }
 
 /* ========================= */
-/* Fenêtres Connexion / Inscription */
+/* PAGE CONNEXION */
 /* ========================= */
 
+.auth-container {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding-top: 100px;
+}
+
+/* Boîte de dialogue */
 .auth-box {
+    width: 450px;
+    max-width: 90%;
+
     background: rgba(255, 255, 255, 0.75);
 
     border: 4px solid #D4AF37;
     border-radius: 20px;
+
+    padding: 40px;
 
     backdrop-filter: blur(5px);
 
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
 
+/* Titre */
 .auth-box h2 {
+    text-align: center;
     color: #374663;
+    margin-bottom: 25px;
     font-weight: bold;
 }
 
+/* Champ de saisie */
 .form-control {
     height: 50px;
     border-radius: 10px;
 }
 
-/* Bouton des fenêtres */
+/* Bouton suivant */
 .btn-auth {
     width: 100%;
     height: 50px;
@@ -130,20 +150,65 @@ body {
     color: white;
 }
 
-/* Titre CleanCare dans l'inscription */
+/* Fenêtre de connexion */
+.auth-box {
+    background: rgba(255, 255, 255, 0.75);
+
+    border: 4px solid #D4AF37;
+    border-radius: 20px;
+
+    backdrop-filter: blur(5px);
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+.auth-box h2 {
+    color: #374663;
+    font-weight: bold;
+}
+
+.auth-box .form-control {
+    height: 50px;
+    border-radius: 10px;
+}
+
+.btn-auth {
+    width: 100%;
+    height: 50px;
+
+    background-color: #D4AF37;
+    color: white;
+
+    border: none;
+    border-radius: 12px;
+
+    font-weight: 600;
+}
+
+.btn-auth:hover {
+    background-color: #bf9b2e;
+    color: white;
+}
+
 .inscription-title {
     color: #D4AF37;
+}
+
+.glass-box {
+      background: rgba(255, 255, 255, 0.75);
+
+      
+     width: 600px;      
+    padding: 30px; 
+    border-radius: 25px;
+
+    backdrop-filter: blur(5px);
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+.glass-box h1 {
+    font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* Sous-titre Bienvenue */
-#inscriptionModal h2 {
-    color: #374663;
-}
-
-/* Texte d'inscription */
-#inscriptionModal p {
-    color: #555;
-    font-size: 0.95rem;
+    margin-bottom: 25px;
 }
