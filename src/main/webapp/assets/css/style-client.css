@@ -1,0 +1,11 @@
+.hero {
+    /* Le dégradé sombre (gauche) vers transparent (droite) combiné à l'image */
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%),
+    url('../img/background.jpg') center/cover no-repeat;
+
+    /* Prend toute la hauteur de l'écran */
+    min-height: 100vh;
+
+    /* On ajoute un peu d'espace en haut pour que le texte ne passe pas sous le header fixe */
+    padding-top: 80px;
+}
