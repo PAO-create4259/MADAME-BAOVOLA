@@ -1,10 +1,16 @@
 package dao;
 
+import model.DetailLavage;
 import model.Lavage;
+import utils.DatabaseConnection;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LavageDAO extends BaseDAO<Lavage> {
 
@@ -27,14 +33,14 @@ public class LavageDAO extends BaseDAO<Lavage> {
         // Conversion du Timestamp SQL vers LocalDateTime Java
         Timestamp tsCommande = rs.getTimestamp("date_commande");
         if (tsCommande != null) {
-            lavage.setDateCommande(tsCommande.toLocalDateTime());
+            lavage.setDateCommande(Timestamp.valueOf(tsCommande.toLocalDateTime()));
         }
 
         lavage.setStatut(rs.getString("statut"));
 
         Timestamp tsRetrait = rs.getTimestamp("date_retrait");
         if (tsRetrait != null) {
-            lavage.setDateRetrait(tsRetrait.toLocalDateTime());
+            lavage.setDateRetrait(Timestamp.valueOf(tsRetrait.toLocalDateTime()));
         }
 
         return lavage;
@@ -64,11 +70,113 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
         // Gestion de la date de retrait qui peut être vide (null)
         if (objet.getDateRetrait() != null) {
-            ps.setTimestamp(3, Timestamp.valueOf(objet.getDateRetrait()));
+            ps.setTimestamp(3, Timestamp.valueOf(objet.getDateRetrait().toLocalDateTime()));
         } else {
             ps.setNull(3, java.sql.Types.TIMESTAMP);
         }
 
         ps.setString(4, objet.getIdLavage());
+    }
+
+    // Méthode spécifique pour la page de suivi
+    public List<Lavage> getLavagesByClient(String idClient) {
+        List<Lavage> liste = new ArrayList<>();
+
+        String sql = "SELECT l.*, f.montant_total, f.statut_paiement " +
+                "FROM " + getNomTable() + " l " +
+                "LEFT JOIN facture f ON l.id_lavage = f.id_lavage " +
+                "WHERE l.id_client = ? " +
+                "ORDER BY l.date_commande DESC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, idClient);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Lavage lavage = mapResultSet(rs);
+                    lavage.setMontantTotal(rs.getDouble("montant_total"));
+                    lavage.setStatutPaiement(rs.getString("statut_paiement"));
+                    liste.add(lavage);
+                }
+            }
+
+            // NOUVEAU : On récupère les détails pour chaque lavage trouvé
+            String sqlDetails = "SELECT c.nom, d.quantite, d.prix_unitaire " +
+                    "FROM detail_lavage d " +
+                    "JOIN categorie c ON d.id_categorie = c.id_categorie " +
+                    "WHERE d.id_lavage = ?";
+
+            try (PreparedStatement psDet = con.prepareStatement(sqlDetails)) {
+                for (Lavage l : liste) {
+                    psDet.setString(1, l.getIdLavage());
+                    try (ResultSet rsDet = psDet.executeQuery()) {
+                        List<DetailLavage> details = new ArrayList<>();
+                        while (rsDet.next()) {
+                            DetailLavage detail = new DetailLavage();
+                            detail.setNomCategorie(rsDet.getString("nom"));
+                            detail.setQuantite(rsDet.getInt("quantite"));
+                            detail.setPrixUnitaire(rsDet.getDouble("prix_unitaire"));
+                            details.add(detail);
+                        }
+                        l.setDetails(details);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return liste;
+    }// Méthode pour récupérer une commande spécifique avec tous ses détails
+    public Lavage getLavageCompletById(String idLavage) {
+        Lavage lavage = null;
+
+        String sql = "SELECT l.*, f.montant_total, f.statut_paiement " +
+                "FROM " + getNomTable() + " l " +
+                "LEFT JOIN facture f ON l.id_lavage = f.id_lavage " +
+                "WHERE l.id_lavage = ?";
+
+        try (java.sql.Connection con = utils.DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, idLavage);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    lavage = mapResultSet(rs);
+                    lavage.setMontantTotal(rs.getDouble("montant_total"));
+                    lavage.setStatutPaiement(rs.getString("statut_paiement"));
+                }
+            }
+
+            // Si le lavage existe, on récupère ses détails (les vêtements)
+            if (lavage != null) {
+                String sqlDetails = "SELECT c.nom, d.quantite, d.prix_unitaire " +
+                        "FROM detail_lavage d " +
+                        "JOIN categorie c ON d.id_categorie = c.id_categorie " +
+                        "WHERE d.id_lavage = ?";
+
+                try (PreparedStatement psDet = con.prepareStatement(sqlDetails)) {
+                    psDet.setString(1, idLavage);
+                    try (ResultSet rsDet = psDet.executeQuery()) {
+                        java.util.List<model.DetailLavage> details = new java.util.ArrayList<>();
+                        while (rsDet.next()) {
+                            model.DetailLavage detail = new model.DetailLavage();
+                            detail.setNomCategorie(rsDet.getString("nom"));
+                            detail.setQuantite(rsDet.getInt("quantite"));
+                            detail.setPrixUnitaire(rsDet.getDouble("prix_unitaire"));
+                            details.add(detail);
+                        }
+                        lavage.setDetails(details);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lavage;
     }
 }

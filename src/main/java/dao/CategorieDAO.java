@@ -9,7 +9,8 @@ public class CategorieDAO extends BaseDAO<Categorie> {
 
     @Override
     protected String getNomTable() {
-        return "categorie";
+        // On lit les données depuis la vue
+        return "v_categorie_tarif";
     }
 
     @Override
@@ -21,23 +22,25 @@ public class CategorieDAO extends BaseDAO<Categorie> {
     protected Categorie mapResultSet(ResultSet rs) throws SQLException {
         Categorie categorie = new Categorie();
 
-        // On récupère les données de la base pour créer l'objet Java
-        categorie.setIdCategorie(rs.getString("id_categorie"));
-        categorie.setNom(rs.getString("nom"));
+        // On récupère toutes les colonnes de la vue
+        categorie.setIdCategorie(rs.getInt("id_categorie"));
+        categorie.setNomCategorie(rs.getString("nom_categorie"));
+        categorie.setIdTarif(rs.getInt("id_tarif"));
+        categorie.setPrix(rs.getDouble("prix"));
 
         return categorie;
     }
 
     @Override
     protected String getRequeteInsert() {
-        return "INSERT INTO categorie (id_categorie, nom) VALUES (?, ?)";
+        // L'insertion se fait toujours dans la table d'origine
+        return "INSERT INTO categorie (nom) VALUES (?)";
     }
 
     @Override
     protected void parametrerInsert(PreparedStatement ps, Categorie objet) throws SQLException {
-        // Remplacement des "?" par les valeurs de l'objet pour l'ajout
-        ps.setString(1, objet.getIdCategorie());
-        ps.setString(2, objet.getNom());
+        // Un seul paramètre car l'ID est généré automatiquement par la base
+        ps.setString(1, objet.getNomCategorie());
     }
 
     @Override
@@ -47,9 +50,7 @@ public class CategorieDAO extends BaseDAO<Categorie> {
 
     @Override
     protected void parametrerUpdate(PreparedStatement ps, Categorie objet) throws SQLException {
-        // Remplacement des "?" par les valeurs de l'objet pour la modification
-        ps.setString(1, objet.getNom());
-        // Le deuxième "?" est pour la condition WHERE
-        ps.setString(2, objet.getIdCategorie());
+        ps.setString(1, objet.getNomCategorie());
+        ps.setInt(2, objet.getIdCategorie());
     }
 }

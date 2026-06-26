@@ -9,3 +9,131 @@
     /* On ajoute un peu d'espace en haut pour que le texte ne passe pas sous le header fixe */
     padding-top: 80px;
 }
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a {
+    color: #1a1d20;
+    transition: all 0.3s ease-in-out;
+}
+
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.story-img-wrap {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+    aspect-ratio: 4/5;
+}
+.story-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease-premium);
+}
+.story-img-wrap:hover img { transform: scale(1.05); }
+.story-img-badge {
+    position: absolute;
+    bottom: 24px; left: 24px;
+    background: rgba(255,251,239,0.92);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    box-shadow: var(--shadow-soft);
+}
+.story-img-badge .num { font-family: var(--font-display); font-size: 1.6rem; color: var(--color-blue-dark); font-weight: 600; }
+.story-img-badge .lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Timeline verticale */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+    content: '';
+    position: absolute; left: 6px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-orange), rgba(101,154,185,0.3));
+}
+.timeline-item { position: relative; padding-bottom: 36px; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+    content: '';
+    position: absolute; left: -32px; top: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--color-orange);
+    border: 3px solid var(--color-cream);
+    box-shadow: 0 0 0 2px var(--color-orange);
+}
+.timeline-item .year { font-family: var(--font-display); font-weight: 600; color: var(--color-blue-light); font-size: 1.05rem; }
+
+/* Cartes services */
+.service-card {
+    padding: 36px 28px;
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.5s var(--ease-premium);
+    height: 100%;
+}
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lift);
+}
+.service-card .service-icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 22px;
+    transition: transform 0.5s var(--ease-premium);
+}
+.service-card:hover .service-icon { transform: rotate(-8deg) scale(1.08); }
+
+/* Carte / localisation */
+.map-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lift);
+    height: 100%;
+    min-height: 340px;
+}
+.map-card iframe { width: 100%; height: 100%; border: 0; filter: saturate(0.85); }
+
+/* Cartes contact */
+.contact-mini-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 24px;
+    border-radius: var(--radius-sm);
+    background: var(--color-white);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium);
+}
+.contact-mini-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.contact-mini-card .ic {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(101,154,185,0.12);
+    color: var(--color-blue-light);
+    flex-shrink: 0;
+    font-size: 1.2rem;
+}
+
+/* Équipe */
+.team-card { text-align: center; }
+.team-photo {
+    width: 132px; height: 132px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border: 4px solid var(--color-white);
+}
+.team-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-premium); }
+.team-card:hover .team-photo img { transform: scale(1.1); }
+.team-card .role { font-size: 0.82rem; color: var(--color-blue-light); text-transform: uppercase; letter-spacing: 0.05em; }

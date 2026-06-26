@@ -1,37 +1,71 @@
 package model;
 
-import java.time.LocalDateTime;
+import utils.Utilitaires;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Lavage {
-    private String        idLavage;
-    private String        idClient;
-    private LocalDateTime dateCommande;
-    private String        statut;
-    private LocalDateTime dateRetrait;
+
+    private String idLavage;
+    private String idClient;
+    private Timestamp dateCommande;
+    private String statut;
+    private Timestamp dateRetrait;
+
+    // Attributs supplémentaires provenant de la table facture pour l'affichage
+    private double montantTotal;
+    private String statutPaiement;
+
+    // NOUVEL ATTRIBUT (N'oublie pas d'importer java.util.List et java.util.ArrayList en haut)
+    private java.util.List<DetailLavage> details = new java.util.ArrayList<>();
+
+    public java.util.List<DetailLavage> getDetails() { return details; }
+    public void setDetails(java.util.List<DetailLavage> details) { this.details = details; }
 
     public Lavage() {
     }
 
-    public Lavage(String idLavage, String idClient, LocalDateTime dateCommande, String statut, LocalDateTime dateRetrait) {
+    public Lavage(String idLavage, String idClient, Timestamp dateCommande, String statut, double montantTotal, String statutPaiement) {
         this.setIdLavage(idLavage);
         this.setIdClient(idClient);
         this.setDateCommande(dateCommande);
         this.setStatut(statut);
-        this.setDateRetrait(dateRetrait);
+        this.setMontantTotal(montantTotal);
+        this.setStatutPaiement(statutPaiement);
     }
 
+    // Méthodes pratiques pour l'affichage JSP
+    public String getPrixFormate() {
+        return Utilitaires.formaterNombre(this.montantTotal);
+    }
+
+    public String getDateFormatee() {
+        if (this.dateCommande != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy à HH:mm");
+            return sdf.format(this.dateCommande);
+        }
+        return "";
+    }
+
+    // Getters et Setters
     public String getIdLavage() { return idLavage; }
     public void setIdLavage(String idLavage) { this.idLavage = idLavage; }
 
     public String getIdClient() { return idClient; }
     public void setIdClient(String idClient) { this.idClient = idClient; }
 
-    public LocalDateTime getDateCommande() { return dateCommande; }
-    public void setDateCommande(LocalDateTime dateCommande) { this.dateCommande = dateCommande; }
+    public Timestamp getDateCommande() { return dateCommande; }
+    public void setDateCommande(Timestamp dateCommande) { this.dateCommande = dateCommande; }
 
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
 
-    public LocalDateTime getDateRetrait() { return dateRetrait; }
-    public void setDateRetrait(LocalDateTime dateRetrait) { this.dateRetrait = dateRetrait; }
+    public Timestamp getDateRetrait() { return dateRetrait; }
+    public void setDateRetrait(Timestamp dateRetrait) { this.dateRetrait = dateRetrait; }
+
+    public double getMontantTotal() { return montantTotal; }
+    public void setMontantTotal(double montantTotal) { this.montantTotal = montantTotal; }
+
+    public String getStatutPaiement() { return statutPaiement; }
+    public void setStatutPaiement(String statutPaiement) { this.statutPaiement = statutPaiement; }
 }

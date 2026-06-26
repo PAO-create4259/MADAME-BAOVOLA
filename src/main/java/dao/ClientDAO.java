@@ -3,6 +3,7 @@ package dao;
 import model.Client;
 import utils.DatabaseConnection;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,15 +55,20 @@ public class ClientDAO extends BaseDAO<Client> {
         ps.setString(4, objet.getIdClient());
     }
 
-    public boolean isClientExist(String telephone) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM " + getNomTable() + " WHERE telephone = ?";
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
+    public Client getByTelephone(String telephone) throws SQLException {
+        Client client = null;
+
+        String sql = "SELECT * FROM " + getNomTable() + " WHERE telephone = ?";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, telephone);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    client = mapResultSet(rs);
+                }
             }
         }
-        return false;
+        return client;
     }
 }

@@ -134,3 +134,52 @@ Le projet étant un projet Maven standard, il peut être importé dans n'importe
 - **Eclipse / Eclipse for Enterprise Java** : `File > Import > Existing Maven Projects`
 - **VS Code** : extensions *Extension Pack for Java* + *Maven for Java*
 - **NetBeans** : `File > Open Project` (reconnaît automatiquement le `pom.xml`)
+
+## Changements récents
+
+- Front controller : `ClientController` gère les routes publiques principales (accueil, tarif, apropos, lavage, recapitulatif).
+  - Pour éviter d'intercepter les fichiers statiques, le controller laisse passer les requêtes `/assets/*` au dispatcher par défaut.
+  - Si vous préférez, mappez le servlet sur des patterns explicites (ex. `/accueil`, `/tarif`, ...) au lieu de `/`.
+
+- `src/main/webapp/index.jsp` a été laissé minimal (le controller s'occupe du routage).
+- `pages/client/layout.jsp` inclut maintenant les vues depuis `pages/client/content/{page}.jsp`.
+
+## Routes principales
+
+- `/` ou `/accueil` — page d'accueil client
+- `/tarif` — tarifs
+- `/apropos` — page À propos
+- `/lavage` — page de commande (nécessite connexion client)
+- `/recapitulatif` — récapitulatif de commande
+- `/login`, `/confirmer-commande`, `/suivi`, `/profil` — routes utilisées par le front-end (vérifier les controllers correspondants)
+
+## Dépannage (CSS / JS ne s'appliquent pas)
+
+Si les fichiers CSS/JS retournent du HTML (erreur console type `Unexpected token '<'`), c'est que la requête pour `bootstrap.bundle.min.js` ou autre a reçu le HTML d'une page (souvent `index` ou le contrôleur). Vérifier :
+
+1. Ouvrir DevTools ▶ Network ▶ filtrer par `css` / `js` et recharger.
+2. Vérifier l'URL demandée (doit commencer par `/assets/...`) et que le statut est `200` et le `Content-Type` correct (`text/css` ou `application/javascript`).
+3. Si la réponse contient du HTML, adapter le mapping du servlet (ne pas capturer `/assets/*`) ou configurer le controller pour déléguer les ressources statiques au dispatcher par défaut.
+
+Exemple dans `ClientController.doGet` pour laisser Tomcat servir les statiques :
+
+```java
+if (path != null && path.startsWith("/assets/")) {
+    request.getServletContext().getNamedDispatcher("default").forward(request, response);
+    return;
+}
+```
+
+## Fichiers importants à vérifier
+
+- `src/main/java/controller/ClientController.java` — routage et sécurité basique (redirection vers `/login` si nécessaire)
+- `src/main/webapp/pages/client/layout.jsp` — inclusion des pages de contenu
+- `src/main/webapp/pages/client/content/` — fichiers JSP de contenu (`accueil.jsp`, `tarif.jsp`, `lavage.jsp`, `recapitulatif.jsp`, ...)
+- `src/main/webapp/assets/` — CSS, JS, images, vendor (Bootstrap)
+
+Si besoin, je peux :
+- commiter ces modifications au dépôt (avec message et Co-authored-by)
+- ajouter une section « Développement local » plus détaillée
+- vérifier les autres controllers pour lister toutes les routes
+
+

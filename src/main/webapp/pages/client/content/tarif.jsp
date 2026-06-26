@@ -23,7 +23,7 @@
         <nav class="d-none d-lg-flex align-items-center main-nav">
           <a href="page1_accueil.html" class="nav-link">Accueil</a>
           <a href="page8_tarifs.html" class="nav-link active" aria-current="page">Tarifs</a>
-          <a href="profil.jsp" class="nav-icon-btn mx-2" aria-label="Profil">
+          <a href="profil-none.jsp" class="nav-icon-btn mx-2" aria-label="Profil">
             <i class="bi bi-person"></i>
           </a>
           <a href="apropos.jsp" class="nav-link">À propos</a>
@@ -47,7 +47,7 @@
     <div class="offcanvas-body">
       <a href="page1_accueil.html" class="nav-link d-block py-2 fs-5">Accueil</a>
       <a href="page8_tarifs.html" class="nav-link d-block py-2 fs-5 active">Tarifs</a>
-      <a href="profil.jsp" class="nav-link d-block py-2 fs-5">Profil</a>
+      <a href="profil-none.jsp" class="nav-link d-block py-2 fs-5">Profil</a>
       <a href="apropos.jsp" class="nav-link d-block py-2 fs-5">À propos</a>
       <a href="#connexion" class="btn-login d-inline-flex mt-3">Connexion</a>
     </div>
@@ -165,7 +165,7 @@
           <div class="d-flex flex-column gap-2">
             <a href="page1_accueil.html">Accueil</a>
             <a href="page8_tarifs.html">Tarifs</a>
-            <a href="profil.jsp">Profil</a>
+            <a href="profil-none.jsp">Profil</a>
             <a href="apropos.jsp">À propos</a>
           </div>
         </div>

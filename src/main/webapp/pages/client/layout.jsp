@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="model.Client" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,7 +10,6 @@
     <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/icons/bootstrap-icons.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assets/css/style-client.css" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/Style-Admin1.css">
 
     <script src="${pageContext.request.contextPath}/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
 </head>
@@ -19,9 +19,8 @@
     <div class="container d-flex justify-content-between align-items-center py-2">
 
         <div class="logo">
-            <a href="${pageContext.request.contextPath}/">
-<%--                <img src="${pageContext.request.contextPath}/assets/img/logo.png" alt="CleanCare" style="height: 50px;">--%>
-                CleanCare
+            <a href="${pageContext.request.contextPath}/" class="text-decoration-none text-white">
+                <h5>CleanCare</h5>
             </a>
         </div>
 
@@ -31,7 +30,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
                     <li class="nav-item">
                         <a class="nav-link ${pageClient == 'accueil' ? 'active' : ''}" href="${pageContext.request.contextPath}/">Accueil</a>
                     </li>
@@ -41,12 +40,35 @@
                     <li class="nav-item">
                         <a class="nav-link ${pageClient == 'apropos' ? 'active' : ''}" href="${pageContext.request.contextPath}/apropos">À propos</a>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#inscriptionModal">Inscription</button>
+
+                    <li class="nav-item ms-lg-3">
+                        <%
+                            // On récupère le client depuis la session
+                            Client clientConnecte = (Client) session.getAttribute("clientConnecte");
+
+                            // S'il existe, on affiche son nom et son prénom
+                            if (clientConnecte != null) {
+                        %>
+                    <li class="nav-item ms-lg-3 d-flex align-items-center">
+                        <a href="${pageContext.request.contextPath}/profil" class="nav-link text-white fw-bold">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <%= clientConnecte.getNom() %> <%= clientConnecte.getPrenom() %>
+                        </a>
+
+                        <a href="${pageContext.request.contextPath}/deconnexion" class="btn btn-outline-danger btn-sm ms-3">
+                            <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#connexionModal">Connexion</button>
+                        <%
+                            // Sinon, on affiche le bouton de connexion
+                        } else {
+                        %>
+                        <a href="${pageContext.request.contextPath}/login" class="nav-link btn btn-outline-light btn-sm px-3 ms-2">Connexion</a>
+                        <%
+                            }
+                        %>
                     </li>
+
                 </ul>
             </div>
         </nav>
@@ -58,43 +80,47 @@
     <jsp:include page="content/${pageClient}.jsp" />
 </main>
 
-<div class="modal fade" id="connexionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content auth-box">
-            <div class="modal-body p-4">
-                <h2 class="text-center mb-4">Authentification</h2>
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Téléphone">
+<footer class="site-footer" style="padding: 20px 0 20px 0;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <span class="brand-mark mb-3" style="color:var(--color-cream); font-weight: bold; font-size: 1.2rem;">
+                  CleanCare
+                </span>
+                <p class="mt-3" style="opacity:0.7; max-width:320px;">Pressing &amp; laverie premium à Antananarivo. Votre linge, notre attention.</p>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6>Navigation</h6>
+                <div class="d-flex flex-column gap-2">
+                    <a href="${pageContext.request.contextPath}/" class="text-decoration-none text-muted">Accueil</a>
+                    <a href="${pageContext.request.contextPath}/tarif" class="text-decoration-none text-muted">Tarifs</a>
+                    <a href="${pageContext.request.contextPath}/profil" class="text-decoration-none text-muted">Profil</a>
+                    <a href="${pageContext.request.contextPath}/apropos" class="text-decoration-none text-muted">À propos</a>
                 </div>
-                <button class="btn btn-auth">Suivant</button>
+            </div>
+            <div class="col-6 col-lg-3">
+                <h6>Contact</h6>
+                <div class="d-flex flex-column gap-2 text-muted">
+                    <span><i class="bi bi-telephone me-2"></i>034 00 000 00</span>
+                    <span><i class="bi bi-envelope me-2"></i>contact@cleancare.mg</span>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <h6>Suivez-nous</h6>
+                <div class="d-flex gap-2">
+                    <a href="#" class="nav-icon-btn text-muted"><i class="bi bi-facebook fs-4"></i></a>
+                    <a href="#" class="nav-icon-btn text-muted"><i class="bi bi-instagram fs-4"></i></a>
+                    <a href="#" class="nav-icon-btn text-muted"><i class="bi bi-whatsapp fs-4"></i></a>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="modal fade" id="inscriptionModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content auth-box">
-            <div class="modal-body p-4">
-                <h1 class="text-center inscription-title">CleanCare</h1>
-                <h2 class="text-center mb-3">Bienvenue</h2>
-                <p class="text-center mb-4">Veuillez vous connecter pour une expérience optimale.</p>
-                <form>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Nom">
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="form-control" placeholder="Prénom">
-                    </div>
-                    <div class="mb-4">
-                        <input type="tel" class="form-control" placeholder="Téléphone">
-                    </div>
-                    <button class="btn btn-auth">Suivant</button>
-                </form>
-            </div>
+        <hr class="footer-divider my-4">
+        <div class="d-flex flex-wrap justify-content-between footer-bottom text-muted small">
+            <span>© 2026 CleanCare. Tous droits réservés.</span>
+            <span>Antananarivo, Madagascar</span>
         </div>
     </div>
-</div>
+</footer>
 
 </body>
 </html>
