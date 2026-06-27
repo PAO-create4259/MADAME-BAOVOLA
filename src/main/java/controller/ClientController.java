@@ -48,7 +48,7 @@ public class ClientController extends HttpServlet {
             return;
         }
 
-        if ("lavage".equals(page)) {
+        if ("lavage".equals(page) || "tarif".equals(page)) {
             CategorieDAO categorieDAO = new CategorieDAO();
             request.setAttribute("categories", categorieDAO.getAll());
 
