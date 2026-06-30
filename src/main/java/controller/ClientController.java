@@ -48,16 +48,28 @@ public class ClientController extends HttpServlet {
             return;
         }
 
-        if ("lavage".equals(page) || "tarif".equals(page)) {
+        if ("tarif".equals(page) || "lavage".equals(page)) {
+
             CategorieDAO categorieDAO = new CategorieDAO();
-            request.setAttribute("categories", categorieDAO.getAll());
+
+            // On utilise la méthode avec cache au lieu du getAll() classique !
+            request.setAttribute("categories", categorieDAO.getAllCached());
 
             TarifLivraisonDAO tarifLivraisonDAO = new TarifLivraisonDAO();
-            TarifLivraison tarifActuel = tarifLivraisonDAO.getTarifActuel();
-
-            double prixLivraison = (tarifActuel != null) ? tarifActuel.getPrixUnitaire() : 0.0;
-            request.setAttribute("prixLivraison", prixLivraison);
+            model.TarifLivraison tarifActuel = tarifLivraisonDAO.getTarifActuel();
+            request.setAttribute("prixLivraison", (tarifActuel != null) ? tarifActuel.getPrixUnitaire() : 0.0);
         }
+
+//        if ("lavage".equals(page) || "tarif".equals(page)) {
+//            CategorieDAO categorieDAO = new CategorieDAO();
+//            request.setAttribute("categories", categorieDAO.getAll());
+//
+//            TarifLivraisonDAO tarifLivraisonDAO = new TarifLivraisonDAO();
+//            TarifLivraison tarifActuel = tarifLivraisonDAO.getTarifActuel();
+//
+//            double prixLivraison = (tarifActuel != null) ? tarifActuel.getPrixUnitaire() : 0.0;
+//            request.setAttribute("prixLivraison", prixLivraison);
+//        }
 
         if ("profil".equals(page)) {
             if (session.getAttribute("clientConnecte") == null) {

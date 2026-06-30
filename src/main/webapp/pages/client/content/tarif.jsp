@@ -8,20 +8,11 @@
 %>
 
 <section class="page-hero parallax-wrap">
-  <div class="hero-wave-bg">
-    <svg viewBox="0 0 1440 600" preserveAspectRatio="xMidYMid slice" class="parallax-layer" data-speed="0.08">
-      <path d="M0,420 C280,500 480,340 760,400 C1040,460 1180,360 1440,420 L1440,600 L0,600 Z"
-            fill="#659ab9" opacity="0.10"></path>
-      <path d="M0,460 C300,380 520,520 800,460 C1080,400 1220,500 1440,460 L1440,600 L0,600 Z"
-            fill="#eaa93d" opacity="0.10"></path>
-    </svg>
-  </div>
 
   <div class="container position-relative" style="z-index:1;">
     <div class="row justify-content-center text-center">
       <div class="col-lg-8">
-        <p class="eyebrow justify-content-center" data-reveal="fade">Nos tarifs</p>
-        <h1 class="display-1 mt-3" style="font-size:clamp(2.6rem, 6vw, 4.2rem);">
+        <h1 class="display-1 mt-5" style="font-size:clamp(2.6rem, 6vw, 4.2rem);">
           <span class="text-reveal-line">Un prix juste,</span>
           <span class="text-reveal-line"><em style="font-style:italic; color:var(--color-blue-light);">pour chaque tissu</em></span>
         </h1>

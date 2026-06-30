@@ -4,6 +4,7 @@ import model.Categorie;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CategorieDAO extends BaseDAO<Categorie> {
 
@@ -17,6 +18,10 @@ public class CategorieDAO extends BaseDAO<Categorie> {
     protected String getNomId() {
         return "id_categorie";
     }
+
+    private static List<Categorie> cacheCategories = null;
+    private static long cacheHeureMiseAJour = 0;
+    private static final long DUREE_VALIDITE_CACHE = 60 * 60 * 1000;
 
     @Override
     protected Categorie mapResultSet(ResultSet rs) throws SQLException {
@@ -52,5 +57,29 @@ public class CategorieDAO extends BaseDAO<Categorie> {
     protected void parametrerUpdate(PreparedStatement ps, Categorie objet) throws SQLException {
         ps.setString(1, objet.getNomCategorie());
         ps.setInt(2, objet.getIdCategorie());
+    }
+
+    public List<Categorie> getAllCached() {
+        long maintenant = System.currentTimeMillis();
+
+        // On vérifie si le cache est vide OU si la durée de validité est dépassée
+        if (cacheCategories == null || (maintenant - cacheHeureMiseAJour) > DUREE_VALIDITE_CACHE) {
+
+            // Le "sout" te permettra de vérifier dans la console d'IntelliJ quand la BDD est appelée
+            System.out.println("--> [CACHE MISS] Récupération des catégories depuis la BDD...");
+
+            // On appelle le getAll() normal de ton BaseDAO
+            cacheCategories = super.getAll();
+            cacheHeureMiseAJour = maintenant;
+
+        } else {
+            System.out.println("--> [CACHE HIT] Catégories servies depuis la mémoire RAM !");
+        }
+
+        return cacheCategories;
+    }
+
+    public static void viderCache() {
+        cacheCategories = null;
     }
 }
