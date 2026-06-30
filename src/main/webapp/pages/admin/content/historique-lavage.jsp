@@ -10,12 +10,12 @@
 
     <div class="filter-bar">
         <span class="label">Filtre :</span>
-        <button class="btn btn-filter active">Aujourd'hui</button>
-        <button class="btn btn-filter">Par date</button>
-        <button class="btn btn-filter">Par client</button>
-        <button class="btn btn-filter">Terminé</button>
-        <button class="btn btn-filter">Annulé</button>
-        <input type="text" class="form-control search-box" placeholder="Rechercher...">
+        <button class="btn btn-filter active" data-filter="all">Aujourd'hui</button>
+        <button class="btn btn-filter" data-filter="date">Par date</button>
+        <button class="btn btn-filter" data-filter="client">Par client</button>
+        <button class="btn btn-filter" data-filter="termine">Terminé</button>
+        <button class="btn btn-filter" data-filter="annule">Annulé</button>
+        <input type="text" id="searchInput" class="form-control search-box" placeholder="Rechercher...">
     </div>
 
     <div class="card-table">
@@ -30,48 +30,84 @@
                 <th>Statut</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>09/06/2026</td>
-                <td>LAV-010</td>
-                <td>034 00 010</td>
-                <td>3 pcs</td>
-                <td>— Ar</td>
-                <td><span class="badge-status badge-termine">Terminé</span></td>
+            <tbody id="lavageTableBody">
+            <%
+                java.util.List<model.Lavage> historiqueLavages = (java.util.List<model.Lavage>) request.getAttribute("historiqueLavages");
+                if (historiqueLavages != null && !historiqueLavages.isEmpty()) {
+                    for (model.Lavage lavage : historiqueLavages) {
+            %>
+            <tr data-date="<%= lavage.getDateFormatee().split(" ")[0] %>"
+                data-statut="<%= lavage.getStatut().toLowerCase() %>"
+                data-client="<%= lavage.getIdClient() %>"
+                data-recherche="<%= lavage.getIdLavage() %> <%= lavage.getIdClient() %>">
+                <td><%= lavage.getDateFormatee() %></td>
+                <td><%= lavage.getIdLavage() %></td>
+                <td><%= lavage.getIdClient() %></td>
+                <td><%= lavage.getDetails() != null ? lavage.getDetails().size() : 0 %> pcs</td>
+                <td><%= lavage.getPrixFormate() %> Ar</td>
+                <td><span class="badge-status <%= "Annulé".equals(lavage.getStatut()) ? "badge-annule" : "badge-termine" %>"><%= lavage.getStatut() %></span></td>
             </tr>
+            <%
+                }
+            } else {
+            %>
             <tr>
-                <td>09/06/2026</td>
-                <td>LAV-011</td>
-                <td>033 00 011</td>
-                <td>1 pc</td>
-                <td>— Ar</td>
-                <td><span class="badge-status badge-annule">Annulé</span></td>
+                <td colspan="6" class="text-center">Aucun historique disponible</td>
             </tr>
-            <tr>
-                <td>08/06/2026</td>
-                <td>LAV-009</td>
-                <td>032 00 009</td>
-                <td>6 pcs</td>
-                <td>— Ar</td>
-                <td><span class="badge-status badge-termine">Terminé</span></td>
-            </tr>
-            <tr>
-                <td>08/06/2026</td>
-                <td>LAV-008</td>
-                <td>038 00 008</td>
-                <td>4 pcs</td>
-                <td>— Ar</td>
-                <td><span class="badge-status badge-termine">Terminé</span></td>
-            </tr>
-            <tr>
-                <td>07/06/2026</td>
-                <td>LAV-007</td>
-                <td>034 00 007</td>
-                <td>2 pcs</td>
-                <td>— Ar</td>
-                <td><span class="badge-status badge-annule">Annulé</span></td>
-            </tr>
+            <%
+                }
+            %>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('#lavageTableBody tr');
+
+        // Get today's date
+        const today = new Date().toLocaleDateString('fr-FR');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                applyFilters();
+            });
+        });
+
+        searchInput.addEventListener('input', applyFilters);
+
+        function applyFilters() {
+            const activeFilter = document.querySelector('.btn-filter.active').getAttribute('data-filter');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            tableRows.forEach(row => {
+                let show = true;
+
+                // Apply search filter
+                if (searchTerm && row.getAttribute('data-recherche')) {
+                    if (!row.getAttribute('data-recherche').toLowerCase().includes(searchTerm)) {
+                        show = false;
+                    }
+                }
+
+                // Apply statut filter
+                if (show && activeFilter !== 'all') {
+                    const statut = row.getAttribute('data-statut');
+                    if (activeFilter === 'termine' && statut !== 'prêt à récupérer' && statut !== 'linge récupéré') {
+                        show = false;
+                    }
+                    if (activeFilter === 'annule' && statut !== 'annulé') {
+                        show = false;
+                    }
+                }
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+    });
+</script>
