@@ -4,11 +4,6 @@ CREATE DATABASE cleancareclothes;
 -- Connexion à la base de données
 \c cleancareclothes;
 
--- ==============================================================================
--- 1. TABLES INDÉPENDANTES (Sans clé étrangère)
--- ==============================================================================
-
--- Table : client
 CREATE TABLE client
 (
     id_client VARCHAR(10) PRIMARY KEY,
@@ -64,6 +59,8 @@ CREATE TABLE tarif_livraison
     part_livreur       INTEGER        NOT NULL DEFAULT 75
 );
 
+INSERT INTO tarif_livraison (prix_unitaire)
+VALUES (5000);
 
 -- Table : categorie_depense
 CREATE TABLE categorie_depense
@@ -279,6 +276,7 @@ CREATE TRIGGER trigger_next_id_recuperation
     FOR EACH ROW
 EXECUTE FUNCTION next_id_recuperation();
 
+ALTER TABLE recuperation ALTER COLUMN id_livreur DROP NOT NULL;
 
 -- Table : livraison
 CREATE TABLE livraison
@@ -371,3 +369,30 @@ CREATE TABLE depense
 
 SELECT * FROM utilisateur;
 
+
+SELECT * FROM categorie;
+
+CREATE OR REPLACE VIEW v_categorie_tarif AS
+SELECT
+    c.id_categorie,
+    c.nom AS nom_categorie,
+    t.id_tarif,
+    t.prix
+FROM
+    categorie c
+        JOIN
+    tarif t ON c.id_categorie = t.id_categorie;
+
+SELECT * FROM v_categorie_tarif;
+
+-- migration_V2 Tahina
+ALTER TABLE recuperation ALTER COLUMN id_livreur DROP NOT NULL;
+ALTER TABLE livraison ALTER COLUMN id_livreur DROP NOT NULL;
+
+-- Migration v3 : persistance du choix client "récupération sur place"
+ALTER TABLE lavage ADD COLUMN IF NOT EXISTS mode_retrait VARCHAR(20);
+ALTER TABLE lavage ADD CONSTRAINT verif_mode_retrait
+    CHECK (mode_retrait IN ('sur_place', 'domicile') OR mode_retrait IS NULL);
+
+INSERT INTO tarif_livraison (prix_unitaire)
+VALUES (5000);

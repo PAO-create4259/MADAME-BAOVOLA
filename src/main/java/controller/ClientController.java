@@ -21,7 +21,7 @@ import java.util.List;
 public class ClientController extends HttpServlet {
 
     private static final List<String> PAGES_AUTORISEES = Arrays.asList(
-            "accueil", "tarif", "apropos", "lavage", "profil", "detail"
+            "accueil", "tarif", "apropos", "lavage", "profil", "detail", "recapitulatif"
     );
 
     @Override
