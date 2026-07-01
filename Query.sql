@@ -396,3 +396,5 @@ ALTER TABLE lavage ADD CONSTRAINT verif_mode_retrait
 
 INSERT INTO tarif_livraison (prix_unitaire)
 VALUES (5000);
+
+Select * from depense;

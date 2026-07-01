@@ -17,7 +17,6 @@ public class AuthController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Affiche la page de login à l'intérieur du layout
         request.setAttribute("pageClient", "login");
         this.getServletContext().getRequestDispatcher("/pages/client/layout.jsp").forward(request, response);
     }

@@ -76,8 +76,8 @@
                     <input type="date" class="form-control search-box" name="dateDepense" required>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label text-muted">Description (ex : consommation eau/électricité)</label>
-                    <input type="text" class="form-control search-box" name="description" placeholder="Ex : Facture JIRAMA - 120 kWh / 8 m³">
+                    <label class="form-label text-muted">Description</label>
+                    <input type="text" class="form-control search-box" name="description">
                 </div>
                 <button type="submit" class="btn btn-filter" style="background-color: #111; color: white; margin-top: 10px;">Enregistrer la dépense</button>
             </form>

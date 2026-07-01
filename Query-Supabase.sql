@@ -387,3 +387,5 @@ ALTER TABLE livraison ALTER COLUMN id_livreur DROP NOT NULL;
 ALTER TABLE lavage ADD COLUMN IF NOT EXISTS mode_retrait VARCHAR(20);
 ALTER TABLE lavage ADD CONSTRAINT verif_mode_retrait
     CHECK (mode_retrait IN ('sur_place', 'domicile') OR mode_retrait IS NULL);
+
+

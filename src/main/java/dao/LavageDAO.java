@@ -242,4 +242,48 @@ public class LavageDAO extends BaseDAO<Lavage> {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); return false; }
     }
+
+    public int countEnCours(String idClient) {
+
+        String sql = "SELECT COUNT(*) FROM lavage " +
+                "WHERE id_client = ? " +
+                "AND statut IN ('En attente','Linge récupéré','En lavage')";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, idClient);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int countTermines(String idClient) {
+
+        String sql = "SELECT COUNT(*) FROM lavage " +
+                "WHERE id_client = ? " +
+                "AND statut = 'Prêt à récupérer'";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, idClient);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

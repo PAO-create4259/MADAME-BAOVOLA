@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%-- Fragment inclus dans layout.jsp --%>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Client" %>
+<%@ page import="dao.LavageDAO" %>
 
 <div class="topbar">
     <h1 class="page-title"><i class="bi bi-person-lines-fill"></i> Liste des clients</h1>
@@ -10,60 +12,71 @@
 
     <div class="filter-bar">
         <span class="label">Filtre :</span>
-        <button class="btn btn-filter active">Tous</button>
-        <button class="btn btn-filter">Par nom</button>
-        <button class="btn btn-filter">Par téléphone</button>
-        <button class="btn btn-filter">Activités</button>
-        <input type="text" class="form-control search-box" placeholder="Rechercher un client...">
+        <a href="${pageContext.request.contextPath}/admin/clients?filtre=tous"
+           class="btn btn-filter active">Tous</a>
+
+        <a href="${pageContext.request.contextPath}/admin/clients?filtre=nom"
+           class="btn btn-filter">Par nom</a>
+
+        <a href="${pageContext.request.contextPath}/admin/clients?filtre=telephone"
+           class="btn btn-filter">Par téléphone</a>
+
+        <form action="${pageContext.request.contextPath}/admin/clients" method="get">
+            <input type="hidden" name="filtre" value="telephone">
+            <input
+                    type="text"
+                    name="telephone"
+                    class="form-control search-box"
+                    placeholder="Entrer le numéro complet">
+
+            <button type="submit" class="btn btn-primary">
+                Rechercher
+            </button>
+        </form>
     </div>
 
     <div class="card-table">
         <table class="table lav-table">
             <thead>
             <tr>
-                <th>Nom / Prénom</th>
+                <th>Nom & Prénom</th>
                 <th>Téléphone</th>
-                <th>Date d'inscription</th>
                 <th>Lavages terminés</th>
                 <th>En cours</th>
             </tr>
             </thead>
             <tbody>
+
+            <%
+                // Récupération des objets envoyés par le contrôleur
+                List<Client> listeClients = (List<Client>) request.getAttribute("clients");
+                LavageDAO daoLavage = (LavageDAO) request.getAttribute("lavageDAO");
+
+                // Vérification de sécurité pour éviter un NullPointerException
+                if (listeClients != null) {
+                    for (Client client : listeClients) {
+            %>
             <tr>
-                <td class="client-name">Rakoto Jean</td>
-                <td>034 00 001</td>
-                <td>01/01/2026</td>
-                <td>12</td>
-                <td><span class="badge-status badge-cours">1</span></td>
+                <td><%= client.getNom() %> <%= client.getPrenom() %></td>
+                <td><%= client.getTelephone() %></td>
+                <td>
+                    <%= daoLavage.countTermines(client.getIdClient()) %>
+                </td>
+                <td>
+                    <%= daoLavage.countEnCours(client.getIdClient()) %>
+                </td>
             </tr>
+            <%
+                }
+            } else {
+            %>
             <tr>
-                <td class="client-name">Rabe Marie</td>
-                <td>033 00 002</td>
-                <td>15/02/2026</td>
-                <td>5</td>
-                <td>0</td>
+                <td colspan="4" class="text-center text-muted">Aucun client trouvé.</td>
             </tr>
-            <tr>
-                <td class="client-name">Andry Solo</td>
-                <td>032 00 003</td>
-                <td>03/03/2026</td>
-                <td>9</td>
-                <td><span class="badge-status badge-cours">2</span></td>
-            </tr>
-            <tr>
-                <td class="client-name">Rasoa Hanta</td>
-                <td>038 00 004</td>
-                <td>22/03/2026</td>
-                <td>3</td>
-                <td><span class="badge-status badge-cours">1</span></td>
-            </tr>
-            <tr>
-                <td class="client-name">Tovo Naina</td>
-                <td>034 00 005</td>
-                <td>10/04/2026</td>
-                <td>7</td>
-                <td>0</td>
-            </tr>
+            <%
+                }
+            %>
+
             </tbody>
         </table>
     </div>

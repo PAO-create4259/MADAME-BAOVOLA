@@ -1,6 +1,11 @@
 package controller;
 
+import dao.ClientDAO;
+import model.Client;
+
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -21,7 +26,7 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if(session.getAttribute("utilisateur") == null) {
+        if (session.getAttribute("utilisateur") == null) {
             response.sendRedirect(request.getContextPath() + "/admin/login");
             return;
         }
@@ -62,6 +67,9 @@ public class AdminController extends HttpServlet {
                 break;
             case "tarifs":
                 chargerTarifs(request);
+                break;
+            case "clients":
+                chargerClients(request);
                 break;
         }
 
@@ -173,7 +181,7 @@ public class AdminController extends HttpServlet {
 
         try {
             if (debutParam != null && !debutParam.isEmpty() && finParam != null && !finParam.isEmpty()) {
-                return new java.sql.Date[]{ java.sql.Date.valueOf(debutParam), java.sql.Date.valueOf(finParam) };
+                return new java.sql.Date[]{java.sql.Date.valueOf(debutParam), java.sql.Date.valueOf(finParam)};
             }
         } catch (IllegalArgumentException ignored) {
             // Format invalide -> on retombe sur la période par défaut
@@ -182,6 +190,39 @@ public class AdminController extends HttpServlet {
         java.time.LocalDate aujourdHui = java.time.LocalDate.now();
         java.sql.Date debut = java.sql.Date.valueOf(aujourdHui.withDayOfMonth(1));
         java.sql.Date fin = java.sql.Date.valueOf(aujourdHui);
-        return new java.sql.Date[]{ debut, fin };
+        return new java.sql.Date[]{debut, fin};
+    }
+
+    private void chargerClients(HttpServletRequest request) {
+        String filtre = request.getParameter("filtre");
+        String telephone = request.getParameter("telephone");
+
+        ClientDAO clientDAO = new ClientDAO();
+        List<Client> clients;
+
+        if (filtre != null) {
+            if (filtre.equals("nom")) {
+                clients = clientDAO.getClientsParNom();
+            } else if (filtre.equals("telephone")) {
+                clients = new ArrayList<>();
+
+                if (telephone != null && !telephone.trim().isEmpty()) {
+                    try {
+                        Client client = clientDAO.getByTelephone(telephone);
+                        if (client != null) {
+                            clients.add(client);
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                clients = clientDAO.getAll();
+            }
+
+            request.setAttribute("clients", clients);
+            request.setAttribute("lavageDAO", new dao.LavageDAO());
+
+        }
     }
 }

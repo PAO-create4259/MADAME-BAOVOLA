@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientDAO extends BaseDAO<Client> {
 
@@ -70,5 +72,24 @@ public class ClientDAO extends BaseDAO<Client> {
             }
         }
         return client;
+    }
+
+    public List<Client> getClientsParNom() {
+        List<Client> liste = new ArrayList<>();
+        String sql = "SELECT * FROM " + getNomTable() + " ORDER BY nom ASC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                liste.add(mapResultSet(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return liste;
     }
 }

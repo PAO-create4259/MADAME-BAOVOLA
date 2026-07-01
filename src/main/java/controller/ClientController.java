@@ -29,7 +29,6 @@ public class ClientController extends HttpServlet {
         String path = request.getServletPath();
 
         if (path != null && path.startsWith("/assets/")) {
-            // "default" permet de rendre la main au serveur (Tomcat) pour gérer les fichiers statiques
             request.getServletContext().getNamedDispatcher("default").forward(request, response);
             return;
         }
