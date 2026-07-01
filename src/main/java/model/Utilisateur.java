@@ -37,4 +37,5 @@ public class Utilisateur {
 
     public boolean isActif() { return actif; }
     public void setActif(boolean actif) { this.actif = actif; }
+
 }

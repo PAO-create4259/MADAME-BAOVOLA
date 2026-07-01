@@ -82,4 +82,16 @@ public class CategorieDAO extends BaseDAO<Categorie> {
     public static void viderCache() {
         cacheCategories = null;
     }
+
+    public boolean updatePrix(int idTarif, double prix) {
+        if (prix < 0) return false;
+        String sql = "UPDATE tarif SET prix = ? WHERE id_tarif = ?";
+        try (java.sql.Connection con = utils.DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setDouble(1, prix); ps.setInt(2, idTarif);
+            boolean succes = ps.executeUpdate() > 0;
+            if (succes) viderCache();
+            return succes;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
 }

@@ -43,6 +43,12 @@ public class LavageDAO extends BaseDAO<Lavage> {
             lavage.setDateRetrait(Timestamp.valueOf(tsRetrait.toLocalDateTime()));
         }
 
+        try {
+            lavage.setModeRetrait(rs.getString("mode_retrait"));
+        } catch (SQLException ignored) {
+            // Colonne absente si migration_v3 pas encore exécutée
+        }
+
         return lavage;
     }
 
@@ -178,5 +184,62 @@ public class LavageDAO extends BaseDAO<Lavage> {
             e.printStackTrace();
         }
         return lavage;
+    }
+
+    public List<Lavage> getLingeEnAttenteRecuperation() {
+        List<Lavage> liste = new ArrayList<>();
+        String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
+                "(SELECT COUNT(*) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
+                "FROM lavage l JOIN recuperation r ON r.id_lavage = l.id_lavage " +
+                "LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
+                "WHERE l.statut = 'En attente' ORDER BY l.date_commande ASC";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Lavage l = mapResultSet(rs);
+                l.setMontantTotal(rs.getDouble("montant_total"));
+                l.setStatutPaiement(rs.getString("statut_paiement"));
+                l.setQuantiteLinge(rs.getInt("qte"));
+                liste.add(l);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return liste;
+    }
+
+    public List<Lavage> getLingeEnCoursTraitement() {
+        List<Lavage> liste = new ArrayList<>();
+        String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
+                "(SELECT COUNT(*) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
+                "FROM lavage l LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
+                "WHERE l.statut IN ('Linge récupéré', 'En lavage') ORDER BY l.date_commande ASC";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Lavage l = mapResultSet(rs);
+                l.setMontantTotal(rs.getDouble("montant_total"));
+                l.setStatutPaiement(rs.getString("statut_paiement"));
+                l.setQuantiteLinge(rs.getInt("qte"));
+                liste.add(l);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return liste;
+    }
+
+    public boolean changerStatut(String idLavage, String nouveauStatut) {
+        String sql = "Prêt à récupérer".equals(nouveauStatut)
+                ? "UPDATE lavage SET statut = ?, date_retrait = CURRENT_TIMESTAMP WHERE id_lavage = ?"
+                : "UPDATE lavage SET statut = ? WHERE id_lavage = ?";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nouveauStatut); ps.setString(2, idLavage);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
+    }
+
+    public boolean definirModeRetrait(String idLavage, String modeRetrait) {
+        String sql = "UPDATE lavage SET mode_retrait = ? WHERE id_lavage = ? AND mode_retrait IS NULL";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, modeRetrait); ps.setString(2, idLavage);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); return false; }
     }
 }

@@ -79,4 +79,15 @@ public class UtilisateurDAO extends BaseDAO<Utilisateur> {
 
         return utilisateur;
     }
+
+    public java.util.List<Utilisateur> getLivreurs() {
+        java.util.List<Utilisateur> liste = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM utilisateur WHERE role = 'Livreur' AND actif = true ORDER BY nom";
+        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) liste.add(mapResultSet(rs));
+        } catch (SQLException e) { e.printStackTrace(); }
+        return liste;
+    }
+
 }

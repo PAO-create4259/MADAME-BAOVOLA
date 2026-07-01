@@ -378,3 +378,12 @@ FROM
     tarif t ON c.id_categorie = t.id_categorie;
 
 SELECT * FROM v_categorie_tarif;
+
+-- migration_V2 Tahina
+ALTER TABLE recuperation ALTER COLUMN id_livreur DROP NOT NULL;
+ALTER TABLE livraison ALTER COLUMN id_livreur DROP NOT NULL;
+
+-- Migration v3 : persistance du choix client "récupération sur place"
+ALTER TABLE lavage ADD COLUMN IF NOT EXISTS mode_retrait VARCHAR(20);
+ALTER TABLE lavage ADD CONSTRAINT verif_mode_retrait
+    CHECK (mode_retrait IN ('sur_place', 'domicile') OR mode_retrait IS NULL);

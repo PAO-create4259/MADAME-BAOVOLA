@@ -6,44 +6,32 @@
 </div>
 
 <div class="content-area">
-    <div class="filter-bar" style="margin-bottom: 20px;">
+    <form class="filter-bar" method="get" action="${pageContext.request.contextPath}/admin/dashboard" style="margin-bottom: 20px;">
         <span class="label">Sélectionner la période :</span>
-        <button class="btn btn-filter active">Ce mois</button>
-        <button class="btn btn-filter">Cette semaine</button>
-        <button class="btn btn-filter">Aujourd'hui</button>
-
         <span style="margin-left: 15px; margin-right: 5px;">Du :</span>
-        <input type="date" class="form-control search-box" style="width: auto;">
+        <input type="date" name="debut" class="form-control search-box" style="width: auto;" value="<%= request.getAttribute("dateDebut") %>">
         <span style="margin: 0 5px;">Au :</span>
-        <input type="date" class="form-control search-box" style="width: auto;">
-    </div>
+        <input type="date" name="fin" class="form-control search-box" style="width: auto;" value="<%= request.getAttribute("dateFin") %>">
+        <button type="submit" class="btn btn-filter" style="background-color: #111; color: white;">Appliquer</button>
+    </form>
 
     <div style="display: flex; gap: 20px; margin-bottom: 20px;">
         <div class="card-table" style="flex: 1; margin: 0; padding: 25px;">
             <div style="color: #666; font-size: 14px; font-weight: bold;">Chiffre d'affaires</div>
-            <h2 style="margin: 10px 0; font-size: 28px;">— Ar</h2>
+            <h2 style="margin: 10px 0; font-size: 28px;"><%= utils.Utilitaires.formaterNombre((Double) request.getAttribute("chiffreAffaires")) %> Ar</h2>
             <div style="color: #999; font-size: 12px;">Total encaissé sur la période</div>
         </div>
 
         <div class="card-table" style="flex: 1; margin: 0; padding: 25px;">
             <div style="color: #666; font-size: 14px; font-weight: bold;">Dépenses</div>
-            <h2 style="margin: 10px 0; font-size: 28px;">— Ar</h2>
+            <h2 style="margin: 10px 0; font-size: 28px;"><%= utils.Utilitaires.formaterNombre((Double) request.getAttribute("totalDepenses")) %> Ar</h2>
             <div style="color: #999; font-size: 12px;">Charges totales sur la période</div>
         </div>
 
         <div class="card-table" style="flex: 1; margin: 0; padding: 25px;">
             <div style="color: #666; font-size: 14px; font-weight: bold;">Bénéfice net</div>
-            <h2 style="margin: 10px 0; font-size: 28px;">— Ar</h2>
+            <h2 style="margin: 10px 0; font-size: 28px;"><%= utils.Utilitaires.formaterNombre((Double) request.getAttribute("beneficeNet")) %> Ar</h2>
             <div style="color: #999; font-size: 12px;">CA – Dépenses</div>
-        </div>
-    </div>
-
-    <div class="card-table" style="padding: 20px;">
-        <div class="section-label" style="margin-bottom: 20px; font-weight: bold;">Évolution sur la période</div>
-
-        <div style="text-align: center; padding: 50px; color: #888;">
-            <i class="bi bi-bar-chart-line" style="font-size: 40px;"></i>
-            <p style="margin-top: 15px;">Graphique d'évolution CA / Dépenses / Bénéfices</p>
         </div>
     </div>
 

@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.LivraisonHistorique" %>
 <%-- Fragment inclus dans layout.jsp --%>
 
 <div class="topbar">
@@ -6,18 +8,14 @@
 </div>
 
 <div class="content-area">
-    <div class="section-label">Liste des livraisons et récupérations</div>
+    <div class="section-label">Liste des livraisons et récupérations en cours de traitement</div>
 
     <div class="filter-bar">
         <span class="label">Filtre :</span>
-        <button class="btn btn-filter active">Aujourd'hui</button>
-        <button class="btn btn-filter">Par date</button>
-        <button class="btn btn-filter">Par client</button>
-        <button class="btn btn-filter">Par adresse</button>
-        <button class="btn btn-filter">Par N° suivi</button>
-        <button class="btn btn-filter">Récupéré</button>
-        <button class="btn btn-filter">Livré</button>
-        <input type="text" class="form-control search-box" placeholder="Rechercher...">
+        <button class="btn btn-filter active" data-filter="all">Tous</button>
+        <button class="btn btn-filter" data-filter="récupéré">Récupéré</button>
+        <button class="btn btn-filter" data-filter="livré">Livré</button>
+        <input type="text" id="searchInputLivraisonsEnCours" class="form-control search-box" placeholder="Rechercher...">
     </div>
 
     <div class="card-table">
@@ -25,42 +23,67 @@
             <thead>
             <tr>
                 <th>Date</th>
-                <th>N° client</th>
-                <th>Tél contact livreur</th>
+                <th>N° lavage</th>
+                <th>Téléphone client</th>
                 <th>Adresse</th>
                 <th>Statut</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>10/06/2026</td>
-                <td>034 00 001</td>
-                <td>034 00 001</td>
-                <td>Lot II A 42, Andohalalo, Antananarivo</td>
-                <td><span class="badge-status badge-livre"><i class="bi bi-check-circle"></i> Livré</span></td>
+            <tbody id="livraisonsEnCoursBody">
+            <%
+                List<LivraisonHistorique> livraisonsEnCours = (List<LivraisonHistorique>) request.getAttribute("livraisonsEnCours");
+                if (livraisonsEnCours != null && !livraisonsEnCours.isEmpty()) {
+                    for (LivraisonHistorique hist : livraisonsEnCours) {
+            %>
+            <tr data-statut="<%= hist.getStatut().toLowerCase() %>"
+                data-recherche="<%= hist.getIdLavage() %> <%= hist.getTelephone() %> <%= hist.getAdresse() %>">
+                <td><%= hist.getDate() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(hist.getDate()) : "" %></td>
+                <td><%= hist.getIdLavage() %></td>
+                <td><%= hist.getTelephone() %></td>
+                <td><%= hist.getAdresse() %></td>
+                <td><span class="badge-status <%= "Livré".equals(hist.getStatut()) ? "badge-livre" : "badge-recupere" %>">
+                    <i class="bi <%= "Livré".equals(hist.getStatut()) ? "bi-check-circle" : "bi-arrow-up-circle" %>"></i>
+                    <%= hist.getStatut() %>
+                </span></td>
             </tr>
-            <tr>
-                <td>10/06/2026</td>
-                <td>033 00 002</td>
-                <td>033 00 002</td>
-                <td>Lot III B 18, Isotry, Antananarivo</td>
-                <td><span class="badge-status badge-recupere"><i class="bi bi-arrow-up-circle"></i> Récupéré</span></td>
-            </tr>
-            <tr>
-                <td>10/06/2026</td>
-                <td>032 00 003</td>
-                <td>038 00 099 (autre n°)</td>
-                <td>Lot V C 07, Ankadivato, Antananarivo</td>
-                <td><span class="badge-status badge-livre"><i class="bi bi-check-circle"></i> Livré</span></td>
-            </tr>
-            <tr>
-                <td>10/06/2026</td>
-                <td>038 00 004</td>
-                <td>038 00 004</td>
-                <td>Lot I D 33, Ampefiloha, Antananarivo</td>
-                <td><span class="badge-status badge-recupere"><i class="bi bi-arrow-up-circle"></i> Récupéré</span></td>
-            </tr>
+            <%
+                }
+            } else {
+            %>
+            <tr><td colspan="5" class="text-center">Aucune livraison/récupération en cours</td></tr>
+            <%
+                }
+            %>
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterButtons = document.querySelectorAll('.btn-filter');
+        const searchInput = document.getElementById('searchInputLivraisonsEnCours');
+        const rows = document.querySelectorAll('#livraisonsEnCoursBody tr');
+
+        filterButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                applyFilters();
+            });
+        });
+        if (searchInput) searchInput.addEventListener('input', applyFilters);
+
+        function applyFilters() {
+            const activeFilter = document.querySelector('.btn-filter.active').getAttribute('data-filter');
+            const term = searchInput ? searchInput.value.toLowerCase() : '';
+            rows.forEach(function (row) {
+                let show = true;
+                const recherche = row.getAttribute('data-recherche');
+                if (term && recherche && !recherche.toLowerCase().includes(term)) show = false;
+                if (show && activeFilter !== 'all' && row.getAttribute('data-statut') !== activeFilter) show = false;
+                row.style.display = show ? '' : 'none';
+            });
+        }
+    });
+</script>

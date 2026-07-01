@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.Lavage" %>
 <%-- Fragment inclus dans layout.jsp --%>
 
 <div class="topbar">
@@ -12,50 +14,44 @@
 
     <div class="filter-bar">
         <span class="label">Filtre :</span>
-        <button class="btn btn-filter active">Aujourd'hui</button>
-        <button class="btn btn-filter">Par date</button>
-        <button class="btn btn-filter">Par client</button>
-        <button class="btn btn-filter">Par statut</button>
-        <input type="text" class="form-control search-box" placeholder="Rechercher...">
+        <input type="text" class="form-control search-box" data-target="tableAttente" placeholder="Rechercher...">
     </div>
 
     <div class="card-table">
         <table class="table lav-table">
             <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>N° de suivi</th>
-                    <th>Client (tél / ordre)</th>
-                    <th>Qté linge</th>
-                    <th>Prix total</th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>Date</th>
+                <th>N° de suivi</th>
+                <th>Client</th>
+                <th>Qté linge</th>
+                <th>Prix total</th>
+                <th>Action</th>
+            </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-001</td>
-                    <td>034 00 001</td>
-                    <td>3 pcs</td>
-                    <td>— Ar</td>
-                    <td><button class="btn btn-recuperer">Récupérer</button></td>
-                </tr>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-002</td>
-                    <td>033 00 002</td>
-                    <td>5 pcs</td>
-                    <td>— Ar</td>
-                    <td><button class="btn btn-recuperer">Récupérer</button></td>
-                </tr>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-003</td>
-                    <td>032 00 003</td>
-                    <td>2 pcs</td>
-                    <td>— Ar</td>
-                    <td><button class="btn btn-recuperer">Récupérer</button></td>
-                </tr>
+            <tbody id="tableAttente">
+            <%
+                List<Lavage> lingeEnAttente = (List<Lavage>) request.getAttribute("lingeEnAttente");
+                if (lingeEnAttente != null && !lingeEnAttente.isEmpty()) {
+                    for (Lavage l : lingeEnAttente) {
+                        String dateLavage = l.getDateFormatee().split(" ")[0];
+            %>
+            <tr data-recherche="<%= l.getIdLavage() %> <%= l.getIdClient() %>">
+                <td><%= dateLavage %></td>
+                <td><%= l.getIdLavage() %></td>
+                <td><%= l.getIdClient() %></td>
+                <td><%= l.getQuantiteLinge() %> pcs</td>
+                <td><%= l.getPrixFormate() %> Ar</td>
+                <td><button class="btn btn-recuperer" data-id="<%= l.getIdLavage() %>" data-action="recuperer">Récupérer</button></td>
+            </tr>
+            <%
+                }
+            } else {
+            %>
+            <tr><td colspan="6" class="text-center">Aucun linge en attente de récupération</td></tr>
+            <%
+                }
+            %>
             </tbody>
         </table>
     </div>
@@ -68,68 +64,89 @@
 
     <div class="filter-bar">
         <span class="label">Filtre :</span>
-        <button class="btn btn-filter active">Aujourd'hui</button>
-        <button class="btn btn-filter">Par date</button>
-        <button class="btn btn-filter">Par client</button>
-        <button class="btn btn-filter">Par statut</button>
-        <input type="text" class="form-control search-box" placeholder="Rechercher...">
+        <input type="text" class="form-control search-box" data-target="tableEnCours" placeholder="Rechercher...">
     </div>
 
     <div class="card-table">
         <table class="table lav-table">
             <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>N° de suivi</th>
-                    <th>Client (tél / ordre)</th>
-                    <th>Qté linge</th>
-                    <th>Prix total</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>Date</th>
+                <th>N° de suivi</th>
+                <th>Client</th>
+                <th>Qté linge</th>
+                <th>Prix total</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-004</td>
-                    <td>034 00 004</td>
-                    <td>4 pcs</td>
-                    <td>— Ar</td>
-                    <td><span class="badge-status badge-attente">En attente</span></td>
-                    <td>
-                        <button class="btn btn-action btn-laver">Laver</button>
-                        <button class="btn btn-action btn-terminer">Terminer</button>
-                        <button class="btn btn-action btn-annuler">Annuler</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-005</td>
-                    <td>033 00 005</td>
-                    <td>6 pcs</td>
-                    <td>— Ar</td>
-                    <td><span class="badge-status badge-cours">En cours</span></td>
-                    <td>
-                        <button class="btn btn-action btn-laver">Laver</button>
-                        <button class="btn btn-action btn-terminer">Terminer</button>
-                        <button class="btn btn-action btn-annuler">Annuler</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>10/06/2026</td>
-                    <td>LAV-006</td>
-                    <td>032 00 006</td>
-                    <td>2 pcs</td>
-                    <td>— Ar</td>
-                    <td><span class="badge-status badge-cours">En cours</span></td>
-                    <td>
-                        <button class="btn btn-action btn-laver">Laver</button>
-                        <button class="btn btn-action btn-terminer">Terminer</button>
-                        <button class="btn btn-action btn-annuler">Annuler</button>
-                    </td>
-                </tr>
+            <tbody id="tableEnCours">
+            <%
+                List<Lavage> lingeEnCours = (List<Lavage>) request.getAttribute("lingeEnCours");
+                if (lingeEnCours != null && !lingeEnCours.isEmpty()) {
+                    for (Lavage l : lingeEnCours) {
+                        String dateLavage = l.getDateFormatee().split(" ")[0];
+                        String badge = "En lavage".equals(l.getStatut()) ? "badge-cours" : "badge-attente";
+            %>
+            <tr data-recherche="<%= l.getIdLavage() %> <%= l.getIdClient() %>">
+                <td><%= dateLavage %></td>
+                <td><%= l.getIdLavage() %></td>
+                <td><%= l.getIdClient() %></td>
+                <td><%= l.getQuantiteLinge() %> pcs</td>
+                <td><%= l.getPrixFormate() %> Ar</td>
+                <td><span class="badge-status <%= badge %>"><%= l.getStatut() %></span></td>
+                <td>
+                    <button class="btn btn-action btn-laver" data-id="<%= l.getIdLavage() %>" data-action="laver">Laver</button>
+                    <button class="btn btn-action btn-terminer" data-id="<%= l.getIdLavage() %>" data-action="terminer">Terminer</button>
+                    <button class="btn btn-action btn-annuler" data-id="<%= l.getIdLavage() %>" data-action="annuler">Annuler</button>
+                </td>
+            </tr>
+            <%
+                }
+            } else {
+            %>
+            <tr><td colspan="7" class="text-center">Aucun linge en cours de traitement</td></tr>
+            <%
+                }
+            %>
             </tbody>
         </table>
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Boutons d'action (Récupérer / Laver / Terminer / Annuler) -> appel AJAX vers /admin/action
+        document.querySelectorAll('button[data-action]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const idLavage = this.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+
+                fetch('<%= request.getContextPath() %>/admin/action', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'action=' + encodeURIComponent(action) + '&idLavage=' + encodeURIComponent(idLavage)
+                }).then(function (resp) {
+                    if (resp.ok) {
+                        location.reload();
+                    } else {
+                        alert("Une erreur est survenue, veuillez réessayer.");
+                    }
+                });
+            });
+        });
+
+        // Recherche texte par tableau
+        document.querySelectorAll('.search-box[data-target]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                const term = this.value.toLowerCase();
+                const target = this.getAttribute('data-target');
+                document.querySelectorAll('#' + target + ' tr').forEach(function (row) {
+                    const recherche = row.getAttribute('data-recherche');
+                    row.style.display = (!recherche || recherche.toLowerCase().includes(term)) ? '' : 'none';
+                });
+            });
+        });
+    });
+</script>

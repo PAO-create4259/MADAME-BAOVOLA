@@ -68,4 +68,14 @@ public class Lavage {
 
     public String getStatutPaiement() { return statutPaiement; }
     public void setStatutPaiement(String statutPaiement) { this.statutPaiement = statutPaiement; }
+
+    // Attribut calculé (nombre de pièces de linge) pour les tableaux de suivi admin
+    private int quantiteLinge;
+    public int getQuantiteLinge() { return quantiteLinge; }
+    public void setQuantiteLinge(int quantiteLinge) { this.quantiteLinge = quantiteLinge; }
+
+    // Choix du client une fois "Prêt à récupérer" : 'sur_place' ou 'domicile' (persisté en base)
+    private String modeRetrait;
+    public String getModeRetrait() { return modeRetrait; }
+    public void setModeRetrait(String modeRetrait) { this.modeRetrait = modeRetrait; }
 }

@@ -1,7 +1,10 @@
 package controller;
 
 import dao.CategorieDAO;
+import dao.LavageDAO;
+import dao.LivraisonDAO;
 import dao.TarifLivraisonDAO;
+import model.Lavage;
 import model.TarifLivraison;
 
 import javax.servlet.ServletException;
@@ -92,9 +95,12 @@ public class ClientController extends HttpServlet {
 
             String idLavage = request.getParameter("id");
             if (idLavage != null && !idLavage.trim().isEmpty()) {
-                dao.LavageDAO lavageDAO = new dao.LavageDAO();
-                model.Lavage lavageActuel = lavageDAO.getLavageCompletById(idLavage);
+                LavageDAO lavageDAO = new dao.LavageDAO();
+                Lavage lavageActuel = lavageDAO.getLavageCompletById(idLavage);
                 request.setAttribute("lavageDetail", lavageActuel);
+
+                LivraisonDAO livraisonDAO = new LivraisonDAO();
+                request.setAttribute("livraisonExiste", livraisonDAO.existeLivraison(idLavage));
             } else {
                 // Si pas d'ID, on renvoie vers le profil
                 response.sendRedirect(request.getContextPath() + "/profil");
