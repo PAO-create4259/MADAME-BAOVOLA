@@ -17,7 +17,7 @@ public class ChoixLivraisonController extends HttpServlet {
         if (client == null) { response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); return; }
 
         String idLavage = request.getParameter("idLavage");
-        String mode = request.getParameter("mode"); // "domicile" ou "surplace"
+        String mode = request.getParameter("mode");
         if (idLavage == null || idLavage.trim().isEmpty()) { response.setStatus(HttpServletResponse.SC_BAD_REQUEST); return; }
 
         LivraisonDAO livraisonDAO = new LivraisonDAO();

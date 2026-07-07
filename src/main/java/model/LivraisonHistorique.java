@@ -8,6 +8,8 @@ public class LivraisonHistorique {
     private String adresse;
     private Date date;
     private String statut;
+    private String idRecord;
+    private String idLivreur;
 
     public LivraisonHistorique() {}
 
@@ -26,10 +28,9 @@ public class LivraisonHistorique {
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
 
-    private String idRecord;
-    private String idLivreur;
     public String getIdRecord() { return idRecord; }
     public void setIdRecord(String idRecord) { this.idRecord = idRecord; }
+    
     public String getIdLivreur() { return idLivreur; }
     public void setIdLivreur(String idLivreur) { this.idLivreur = idLivreur; }
 }

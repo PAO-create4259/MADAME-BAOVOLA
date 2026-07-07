@@ -209,7 +209,7 @@ public class LavageDAO extends BaseDAO<Lavage> {
     public List<Lavage> getLingeEnCoursTraitement() {
         List<Lavage> liste = new ArrayList<>();
         String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
-                "(SELECT COUNT(*) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
+                "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
                 "FROM lavage l LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
                 "WHERE l.statut IN ('Linge récupéré', 'En lavage') ORDER BY l.date_commande ASC";
         try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
@@ -286,4 +286,32 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
         return 0;
     }
+
+    public List<Lavage> getHistoriqueLavages() {
+        List<Lavage> liste = new ArrayList<>();
+        String sql = "SELECT l.*, f.montant_total, f.statut_paiement," +
+                "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
+                "FROM lavage l " +
+                "JOIN facture f ON l.id_lavage = f.id_lavage " +
+                "WHERE l.statut IN ('Prêt à récupérer', 'Linge récupéré', 'Annulé') " +
+                "ORDER BY l.date_commande DESC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Lavage lavage = mapResultSet(rs);
+                lavage.setMontantTotal(rs.getDouble("montant_total"));
+                lavage.setStatutPaiement(rs.getString("statut_paiement"));
+                lavage.setQuantiteLinge(rs.getInt("qte"));
+                liste.add(lavage);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return liste;
+    }
+
 }

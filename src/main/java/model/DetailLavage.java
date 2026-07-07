@@ -18,7 +18,6 @@ public class DetailLavage {
     public double getPrixUnitaire() { return prixUnitaire; }
     public void setPrixUnitaire(double prixUnitaire) { this.prixUnitaire = prixUnitaire; }
 
-    // Méthodes de formatage pour l'affichage
     public String getPrixUnitaireFormate() {
         return Utilitaires.formaterNombre(this.prixUnitaire);
     }

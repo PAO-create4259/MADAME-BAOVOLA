@@ -86,7 +86,11 @@
                 if (lingeEnCours != null && !lingeEnCours.isEmpty()) {
                     for (Lavage l : lingeEnCours) {
                         String dateLavage = l.getDateFormatee().split(" ")[0];
-                        String badge = "En lavage".equals(l.getStatut()) ? "badge-cours" : "badge-attente";
+                        String statutActuel = l.getStatut();
+                        String badge = "En lavage".equals(statutActuel) ? "badge-cours" : "badge-attente";
+
+                        String btnLaverDisabled = "En lavage".equals(statutActuel) ? "disabled" : "";
+                        String btnTerminerDisabled = !"En lavage".equals(statutActuel) ? "disabled" : "";
             %>
             <tr data-recherche="<%= l.getIdLavage() %> <%= l.getIdClient() %>">
                 <td><%= dateLavage %></td>
@@ -94,10 +98,10 @@
                 <td><%= l.getIdClient() %></td>
                 <td><%= l.getQuantiteLinge() %> pcs</td>
                 <td><%= l.getPrixFormate() %> Ar</td>
-                <td><span class="badge-status <%= badge %>"><%= l.getStatut() %></span></td>
+                <td><span class="badge-status <%= badge %>"><%= statutActuel %></span></td>
                 <td>
-                    <button class="btn btn-action btn-laver" data-id="<%= l.getIdLavage() %>" data-action="laver">Laver</button>
-                    <button class="btn btn-action btn-terminer" data-id="<%= l.getIdLavage() %>" data-action="terminer">Terminer</button>
+                    <button class="btn btn-action btn-laver" data-id="<%= l.getIdLavage() %>" data-action="laver" <%= btnLaverDisabled %>>Laver</button>
+                    <button class="btn btn-action btn-terminer" data-id="<%= l.getIdLavage() %>" data-action="terminer" <%= btnTerminerDisabled %>>Terminer</button>
                     <button class="btn btn-action btn-annuler" data-id="<%= l.getIdLavage() %>" data-action="annuler">Annuler</button>
                 </td>
             </tr>

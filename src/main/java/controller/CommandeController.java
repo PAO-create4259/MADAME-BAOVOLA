@@ -20,18 +20,15 @@ public class CommandeController extends HttpServlet {
         HttpSession session = request.getSession();
         Client client = (Client) session.getAttribute("clientConnecte");
 
-        // Sécurité : On vérifie que le client est bien connecté
         if (client == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        // On récupère les tableaux envoyés par le Javascript
         String[] idCategories = request.getParameterValues("idCategorie[]");
         String[] quantites = request.getParameterValues("quantite[]");
         String[] prixUnitaires = request.getParameterValues("prixUnitaire[]");
 
-        // On récupère les informations globales
         boolean avecRecuperation = Boolean.parseBoolean(request.getParameter("avecRecuperation"));
         String adresse = request.getParameter("adresse");
         String telephone = request.getParameter("telephone");
@@ -44,7 +41,6 @@ public class CommandeController extends HttpServlet {
                 avecRecuperation, adresse, telephone, montantTotal, prixLivraison
         );
 
-        // On renvoie un code de statut au Javascript pour qu'il affiche le Toast ou une erreur
         if (succes) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {

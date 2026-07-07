@@ -11,15 +11,6 @@ public class Utilisateur {
     public Utilisateur() {
     }
 
-    public Utilisateur(String idUtilisateur, String nom, String identifiant, String motDePasse, String role, boolean actif) {
-        this.setIdUtilisateur(idUtilisateur);
-        this.setNom(nom);
-        this.setIdentifiant(identifiant);
-        this.setMotDePasse(motDePasse);
-        this.setRole(role);
-        this.setActif(actif);
-    }
-
     public String getIdUtilisateur() { return idUtilisateur; }
     public void setIdUtilisateur(String idUtilisateur) { this.idUtilisateur = idUtilisateur; }
 

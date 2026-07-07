@@ -14,10 +14,14 @@ public class CommandeDAO {
         Connection con = null;
         try {
             con = DatabaseConnection.getConnection();
-            con.setAutoCommit(false); // 1. On bloque l'enregistrement automatique (Début de la transaction)
+            con.setAutoCommit(false);
 
-            // --- ÉTAPE A : Créer le Lavage et récupérer son ID ---
-            String sqlLavage = "INSERT INTO lavage (id_client, statut) VALUES (?, 'En attente') RETURNING id_lavage";
+            String sqlLavage = "INSERT INTO lavage (id_client, statut) VALUES (?, 'Linge récupéré') RETURNING id_lavage";
+
+            if(avecRecuperation){
+                sqlLavage = "INSERT INTO lavage (id_client, statut) VALUES (?, 'En attente') RETURNING id_lavage";
+            }
+
             PreparedStatement psLavage = con.prepareStatement(sqlLavage);
             psLavage.setString(1, client.getIdClient());
 

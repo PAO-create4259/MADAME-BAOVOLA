@@ -1,6 +1,7 @@
 package controller;
 
 import dao.DepenseDAO;
+import dao.FactureDAO;
 import dao.LavageDAO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,6 +27,9 @@ public class AdminActionController extends HttpServlet {
             case "laver": succes = new LavageDAO().changerStatut(request.getParameter("idLavage"), "En lavage"); break;
             case "terminer": succes = new LavageDAO().changerStatut(request.getParameter("idLavage"), "Prêt à récupérer"); break;
             case "annuler": succes = new LavageDAO().changerStatut(request.getParameter("idLavage"), "Annulé"); break;
+
+            case "payer" : succes = new FactureDAO().updateStatut(request.getParameter("idLavage"), "Payé"); break;
+
             case "ajouterDepense": succes = ajouterDepense(request); break;
             case "assignerLivreur":
                 succes = new dao.LivraisonDAO().assignerLivreur(

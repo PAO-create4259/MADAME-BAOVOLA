@@ -5,7 +5,6 @@ import dao.LavageDAO;
 import dao.LivraisonDAO;
 import dao.TarifLivraisonDAO;
 import model.Lavage;
-import model.TarifLivraison;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -54,24 +53,12 @@ public class ClientController extends HttpServlet {
 
             CategorieDAO categorieDAO = new CategorieDAO();
 
-            // On utilise la méthode avec cache au lieu du getAll() classique !
             request.setAttribute("categories", categorieDAO.getAllCached());
 
             TarifLivraisonDAO tarifLivraisonDAO = new TarifLivraisonDAO();
             model.TarifLivraison tarifActuel = tarifLivraisonDAO.getTarifActuel();
             request.setAttribute("prixLivraison", (tarifActuel != null) ? tarifActuel.getPrixUnitaire() : 0.0);
         }
-
-//        if ("lavage".equals(page) || "tarif".equals(page)) {
-//            CategorieDAO categorieDAO = new CategorieDAO();
-//            request.setAttribute("categories", categorieDAO.getAll());
-//
-//            TarifLivraisonDAO tarifLivraisonDAO = new TarifLivraisonDAO();
-//            TarifLivraison tarifActuel = tarifLivraisonDAO.getTarifActuel();
-//
-//            double prixLivraison = (tarifActuel != null) ? tarifActuel.getPrixUnitaire() : 0.0;
-//            request.setAttribute("prixLivraison", prixLivraison);
-//        }
 
         if ("profil".equals(page)) {
             if (session.getAttribute("clientConnecte") == null) {
@@ -85,7 +72,6 @@ public class ClientController extends HttpServlet {
             request.setAttribute("mesLavages", lavageDAO.getLavagesByClient(clientConnecte.getIdClient()));
         }
 
-        // ON CHARGE LES DONNÉES POUR LA PAGE DÉTAIL
         if ("detail".equals(page)) {
             if (session.getAttribute("clientConnecte") == null) {
                 response.sendRedirect(request.getContextPath() + "/login");
@@ -101,7 +87,6 @@ public class ClientController extends HttpServlet {
                 LivraisonDAO livraisonDAO = new LivraisonDAO();
                 request.setAttribute("livraisonExiste", livraisonDAO.existeLivraison(idLavage));
             } else {
-                // Si pas d'ID, on renvoie vers le profil
                 response.sendRedirect(request.getContextPath() + "/profil");
                 return;
             }

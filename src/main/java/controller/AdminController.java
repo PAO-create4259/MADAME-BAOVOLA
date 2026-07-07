@@ -88,11 +88,9 @@ public class AdminController extends HttpServlet {
         request.setAttribute("livraisonsEnCours", livraisonDAO.getLivraisonsEnCours());
     }
 
-    // Page historique-lavage.jsp : déjà câblée à LavageDAO ailleurs (CommandeController),
-    // ici on s'assure que le servlet la fournit aussi en accès direct (RG40)
     private void chargerHistoriqueLavage(HttpServletRequest request) {
         dao.LavageDAO lavageDAO = new dao.LavageDAO();
-        request.setAttribute("historiqueLavages", lavageDAO.getAll());
+        request.setAttribute("historiqueLavages", lavageDAO.getHistoriqueLavages());
     }
 
     private void chargerHistoriqueLivraison(HttpServletRequest request) {
@@ -198,31 +196,27 @@ public class AdminController extends HttpServlet {
         String telephone = request.getParameter("telephone");
 
         ClientDAO clientDAO = new ClientDAO();
-        List<Client> clients;
+        List<Client> clients = new ArrayList<>();
 
-        if (filtre != null) {
-            if (filtre.equals("nom")) {
-                clients = clientDAO.getClientsParNom();
-            } else if (filtre.equals("telephone")) {
-                clients = new ArrayList<>();
+        if ("nom".equals(filtre)) {
+            clients = clientDAO.getClientsParNom();
 
-                if (telephone != null && !telephone.trim().isEmpty()) {
-                    try {
-                        Client client = clientDAO.getByTelephone(telephone);
-                        if (client != null) {
-                            clients.add(client);
-                        }
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
+        } else if ("telephone".equals(filtre)) {
+            if (telephone != null && !telephone.trim().isEmpty()) {
+                try {
+                    Client client = clientDAO.getByTelephone(telephone);
+                    if (client != null) {
+                        clients.add(client);
                     }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
-            } else {
-                clients = clientDAO.getAll();
             }
-
-            request.setAttribute("clients", clients);
-            request.setAttribute("lavageDAO", new dao.LavageDAO());
-
+        } else {
+            clients = clientDAO.getAll();
         }
+
+        request.setAttribute("clients", clients);
+        request.setAttribute("lavageDAO", new dao.LavageDAO());
     }
 }

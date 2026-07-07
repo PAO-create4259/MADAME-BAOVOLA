@@ -9,13 +9,6 @@ public class Client {
     public Client() {
     }
 
-    public Client(String idClient, String nom, String prenom, String telephone) {
-        this.setIdClient(idClient);
-        this.setNom(nom);
-        this.setPrenom(prenom);
-        this.setTelephone(telephone);
-    }
-
     public String getIdClient() { return idClient; }
     public void setIdClient(String idClient) { this.idClient = idClient; }
 

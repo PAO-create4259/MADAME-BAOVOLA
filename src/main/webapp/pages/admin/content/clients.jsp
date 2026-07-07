@@ -21,7 +21,9 @@
         <a href="${pageContext.request.contextPath}/admin/clients?filtre=telephone"
            class="btn btn-filter">Par téléphone</a>
 
-        <form action="${pageContext.request.contextPath}/admin/clients" method="get">
+        <span class="label">Rechercher :</span>
+
+        <form class="d-flex gap-2" action="${pageContext.request.contextPath}/admin/clients" method="get">
             <input type="hidden" name="filtre" value="telephone">
             <input
                     type="text"
@@ -29,7 +31,7 @@
                     class="form-control search-box"
                     placeholder="Entrer le numéro complet">
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-filter" style="background-color: #111; color: white;">
                 Rechercher
             </button>
         </form>
@@ -39,6 +41,7 @@
         <table class="table lav-table">
             <thead>
             <tr>
+                <th>ID</th>
                 <th>Nom & Prénom</th>
                 <th>Téléphone</th>
                 <th>Lavages terminés</th>
@@ -48,15 +51,14 @@
             <tbody>
 
             <%
-                // Récupération des objets envoyés par le contrôleur
                 List<Client> listeClients = (List<Client>) request.getAttribute("clients");
                 LavageDAO daoLavage = (LavageDAO) request.getAttribute("lavageDAO");
 
-                // Vérification de sécurité pour éviter un NullPointerException
                 if (listeClients != null) {
                     for (Client client : listeClients) {
             %>
             <tr>
+                <td><%= client.getIdClient() %></td>
                 <td><%= client.getNom() %> <%= client.getPrenom() %></td>
                 <td><%= client.getTelephone() %></td>
                 <td>

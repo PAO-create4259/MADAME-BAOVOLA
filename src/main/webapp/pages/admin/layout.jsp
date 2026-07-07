@@ -3,7 +3,6 @@
 <%
     Utilisateur utilisateur = (Utilisateur) session.getAttribute("utilisateur");
 %>
-<%-- La variable "page" est envoyée par le AdminController --%>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,7 +12,6 @@
 
     <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="${pageContext.request.contextPath}/assets/vendor/bootstrap/icons/bootstrap-icons.min.css" rel="stylesheet">
-    <%-- Remplacer style-admin.css par Style-Admin1.css si tu n'as pas encore créé le fichier fusionné --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/Style-Admin1.css">
     <script src="${pageContext.request.contextPath}/assets/vendor/bootstrap/js/bootstrap.bundle.min.js" defer></script>
 </head>
@@ -22,8 +20,7 @@
 <!-- Sidebar -->
 <div class="sidebar" style="display: flex; flex-direction: column; height: 100vh;">
     <div class="brand">
-        <div class="logo-box"></div>
-        <span>CleanCare</span>
+        <span>CleanCare Backoffice</span>
     </div>
 
     <div class="section-title">SUIVI</div>
