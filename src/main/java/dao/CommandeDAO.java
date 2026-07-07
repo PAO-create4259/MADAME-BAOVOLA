@@ -22,6 +22,40 @@ public class CommandeDAO {
                 sqlLavage = "INSERT INTO lavage (id_client, statut) VALUES (?, 'En attente') RETURNING id_lavage";
             }
 
+            // S'assurer que le client existe et possède un id_client
+            if (client == null) {
+                throw new SQLException("Client null lors de la création de la commande");
+            }
+            if (client.getIdClient() == null || client.getIdClient().isEmpty()) {
+                // Chercher un client existant par numéro de téléphone en réutilisant la même connexion (transaction)
+                String sqlFindClient = "SELECT id_client FROM client WHERE telephone = ?";
+                try (PreparedStatement psFind = con.prepareStatement(sqlFindClient)) {
+                    psFind.setString(1, client.getTelephone());
+                    try (ResultSet rsFind = psFind.executeQuery()) {
+                        if (rsFind.next()) {
+                            client.setIdClient(rsFind.getString("id_client"));
+                        }
+                    }
+                }
+                // Si toujours pas d'ID, créer le client avec la même connexion pour que tout soit dans la même transaction
+                if (client.getIdClient() == null || client.getIdClient().isEmpty()) {
+                    String sqlInsertClient = "INSERT INTO client (nom, prenom, telephone) VALUES (?, ?, ?) RETURNING id_client";
+                    try (PreparedStatement psInsertClient = con.prepareStatement(sqlInsertClient)) {
+                        psInsertClient.setString(1, client.getNom());
+                        psInsertClient.setString(2, client.getPrenom());
+                        psInsertClient.setString(3, client.getTelephone());
+                        try (ResultSet rsInsert = psInsertClient.executeQuery()) {
+                            if (rsInsert.next()) {
+                                client.setIdClient(rsInsert.getString("id_client"));
+                            }
+                        }
+                    }
+                }
+                if (client.getIdClient() == null || client.getIdClient().isEmpty()) {
+                    throw new SQLException("Impossible de récupérer ou de créer id_client pour le client");
+                }
+            }
+
             PreparedStatement psLavage = con.prepareStatement(sqlLavage);
             psLavage.setString(1, client.getIdClient());
 
