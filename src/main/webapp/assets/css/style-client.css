@@ -1,12 +1,12 @@
+header {
+    background-color: #7E9BC8;
+    opacity: 0.9;
+}
+
 .hero {
-    /* Le dégradé sombre (gauche) vers transparent (droite) combiné à l'image */
     background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 100%),
     url('../img/background.jpg') center/cover no-repeat;
-
-    /* Prend toute la hauteur de l'écran */
     min-height: 100vh;
-
-    /* On ajoute un peu d'espace en haut pour que le texte ne passe pas sous le header fixe */
     padding-top: 80px;
 }
 
@@ -15,11 +15,37 @@ a {
     text-decoration: none;
 }
 
+header a:hover {
+    color: #7E9BC8;
+}
+
 footer a {
     color: #1a1d20;
     transition: all 0.3s ease-in-out;
 }
 
+.btn-primary {
+    background-color: #7E9BC8;
+    border-color: #7E9BC8;
+}
+
+.btn-primary:hover {
+    background-color: #557aa3;
+    border-color: #557aa3;
+}
+
+.btn-header {
+    color: #7E9BC8;
+    background-color: #fff;
+    border-color: #fff;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-header:hover {
+    font-weight: bold;
+    color: #7E9BC8;
+}
 
 footer a:hover {
     text-decoration: underline;

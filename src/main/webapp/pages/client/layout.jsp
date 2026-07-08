@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<header class="fixed-top bg-dark bg-opacity-75">
+<header class="fixed-top">
     <div class="container d-flex justify-content-between align-items-center py-2">
 
         <div class="logo">
@@ -43,10 +43,8 @@
 
                     <li class="nav-item ms-lg-3">
                         <%
-                            // On récupère le client depuis la session
                             Client clientConnecte = (Client) session.getAttribute("clientConnecte");
 
-                            // S'il existe, on affiche son nom et son prénom
                             if (clientConnecte != null) {
                         %>
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
@@ -56,14 +54,13 @@
                         </a>
 
                         <a href="${pageContext.request.contextPath}/deconnexion" class="btn btn-outline-danger btn-sm ms-3">
-                            <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
+                            <i class="bi bi-box-arrow-right me-1"></i>
                         </a>
                     </li>
                         <%
-                            // Sinon, on affiche le bouton de connexion
                         } else {
                         %>
-                        <a href="${pageContext.request.contextPath}/login" class="nav-link btn btn-outline-light btn-sm px-3 ms-2">Connexion</a>
+                        <a href="${pageContext.request.contextPath}/login" class="nav-link btn-header btn-sm px-3 ms-2">Connexion</a>
                         <%
                             }
                         %>
