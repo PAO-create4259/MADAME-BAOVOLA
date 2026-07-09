@@ -176,6 +176,7 @@ CREATE TABLE lavage
     CONSTRAINT verif_statut CHECK (statut IN ('En attente', 'Linge récupéré', 'En lavage', 'Prêt à récupérer'))
 );
 
+
 -- Séquence : seq_lavage
 CREATE SEQUENCE seq_lavage START WITH 1;
 
@@ -398,3 +399,7 @@ INSERT INTO tarif_livraison (prix_unitaire)
 VALUES (5000);
 
 Select * from depense;
+
+ALTER TABLE lavage DROP CONSTRAINT verif_statut;
+
+ALTER TABLE lavage ADD CONSTRAINT verif_statut CHECK (statut IN ('En attente', 'Linge récupéré', 'En lavage', 'Prêt à récupérer', 'Annulé'));
