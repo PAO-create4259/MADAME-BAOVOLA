@@ -19,8 +19,9 @@
 
 <!-- Sidebar -->
 <div class="sidebar" style="display: flex; flex-direction: column; height: 100vh;">
-    <div class="brand">
-        <span>CleanCare Backoffice</span>
+    <div class="brand d-flex align-items-center gap-2">
+        <img src="${pageContext.request.contextPath}/assets/img/laverie_linge_icon.png" alt="Logo Backoffice" width="50">
+        <span class="fs-5 fw-bold mb-0">CleanCare Backoffice</span>
     </div>
 
     <div class="section-title">SUIVI</div>

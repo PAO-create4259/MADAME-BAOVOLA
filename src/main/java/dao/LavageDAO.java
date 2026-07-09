@@ -189,7 +189,7 @@ public class LavageDAO extends BaseDAO<Lavage> {
     public List<Lavage> getLingeEnAttenteRecuperation() {
         List<Lavage> liste = new ArrayList<>();
         String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
-                "(SELECT COUNT(*) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
+                "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
                 "FROM lavage l JOIN recuperation r ON r.id_lavage = l.id_lavage " +
                 "LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
                 "WHERE l.statut = 'En attente' ORDER BY l.date_commande ASC";

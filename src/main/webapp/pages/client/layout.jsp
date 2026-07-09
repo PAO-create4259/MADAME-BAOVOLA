@@ -19,8 +19,9 @@
     <div class="container d-flex justify-content-between align-items-center py-2">
 
         <div class="logo">
-            <a href="${pageContext.request.contextPath}/" class="text-decoration-none text-white">
-                <h5>CleanCare</h5>
+            <a href="${pageContext.request.contextPath}/" class="text-decoration-none text-white d-flex align-items-center gap-2">
+                <img src="${pageContext.request.contextPath}/assets/img/laverie_linge_icon.png" alt="Logo CleanCare" width="80">
+                <h5 class="mb-0 fw-bold">CleanCare</h5>
             </a>
         </div>
 
