@@ -1,6 +1,7 @@
 package dao;
 
 import model.LivraisonHistorique;
+import model.Status;
 import utils.DatabaseConnection;
 
 import java.sql.Connection;
@@ -106,7 +107,7 @@ public class LivraisonDAO {
             while (rs.next()) {
                 LivraisonHistorique h = new LivraisonHistorique();
                 h.setIdRecord(rs.getString("id_record"));
-                h.setStatut("recuperation".equals(rs.getString("type")) ? "Récupération" : "Livraison");
+                h.setStatut("recuperation".equals(rs.getString("type")) ? Status.RECUPERATION.toString() : Status.LIVRAISON.toString());
                 h.setIdLavage(rs.getString("id_lavage"));
                 h.setTelephone(rs.getString("telephone"));
                 h.setAdresse(rs.getString("adresse"));

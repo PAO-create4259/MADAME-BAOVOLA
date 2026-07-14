@@ -3,5 +3,6 @@
   <component name="DataSourcePerFileMappings">
     <file url="file://$PROJECT_DIR$/Query-Supabase.sql" value="1b402d4c-40c2-49c9-81c5-523ff109ae78" />
     <file url="file://$PROJECT_DIR$/Query.sql" value="96160e4e-06e7-49a6-a23a-9c80bd522b8c" />
+    <file url="file://$PROJECT_DIR$/QueryInsert.sql" value="1b402d4c-40c2-49c9-81c5-523ff109ae78" />
   </component>
 </project>

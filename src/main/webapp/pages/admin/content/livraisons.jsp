@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.LivraisonHistorique" %>
+<%@ page import="model.Status" %>
+<%@ page import="utils.HtmlUtils" %>
 <%-- Fragment inclus dans layout.jsp --%>
 
 <div class="topbar">
@@ -35,15 +37,15 @@
                 if (livraisonsEnCours != null && !livraisonsEnCours.isEmpty()) {
                     for (LivraisonHistorique hist : livraisonsEnCours) {
             %>
-            <tr data-statut="<%= hist.getStatut().toLowerCase() %>"
-                data-recherche="<%= hist.getIdLavage() %> <%= hist.getTelephone() %> <%= hist.getAdresse() %>">
+            <tr data-statut="<%= hist.getStatut() != null ? hist.getStatut().toLowerCase() : "" %>"
+                data-recherche="<%= HtmlUtils.escapeHtml(hist.getIdLavage()) %> <%= HtmlUtils.escapeHtml(hist.getTelephone()) %> <%= HtmlUtils.escapeHtml(hist.getAdresse()) %>">
                 <td><%= hist.getDate() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(hist.getDate()) : "" %></td>
-                <td><%= hist.getIdLavage() %></td>
-                <td><%= hist.getTelephone() %></td>
-                <td><%= hist.getAdresse() %></td>
-                <td><span class="badge-status <%= "Livré".equals(hist.getStatut()) ? "badge-livre" : "badge-recupere" %>">
-                    <i class="bi <%= "Livré".equals(hist.getStatut()) ? "bi-check-circle" : "bi-arrow-up-circle" %>"></i>
-                    <%= hist.getStatut() %>
+                <td><%= HtmlUtils.escapeHtml(hist.getIdLavage()) %></td>
+                <td><%= HtmlUtils.escapeHtml(hist.getTelephone()) %></td>
+                <td><%= HtmlUtils.escapeHtml(hist.getAdresse()) %></td>
+                <td><span class="badge-status <%= Status.LIVRE.toString().equals(hist.getStatut()) ? "badge-livre" : "badge-recupere" %>">
+                    <i class="bi <%= Status.LIVRE.toString().equals(hist.getStatut()) ? "bi-check-circle" : "bi-arrow-up-circle" %>"></i>
+                    <%= HtmlUtils.escapeHtml(hist.getStatut()) %>
                 </span></td>
             </tr>
             <%

@@ -13,8 +13,8 @@
         <span class="label">Filtre :</span>
         <button class="btn btn-filter active" data-filter="all">Tous</button>
         <button class="btn btn-filter" data-filter="today">Aujourd'hui</button>
-        <button class="btn btn-filter" data-filter="termine">Terminé</button>
-        <button class="btn btn-filter" data-filter="annule">Annulé</button>
+        <button class="btn btn-filter" data-filter="paye">Payé</button>
+        <button class="btn btn-filter" data-filter="non-paye">Non payé</button>
 
         <div class="vr mx-2"></div>
 
@@ -35,7 +35,6 @@
                 <th>Client</th>
                 <th>Qté linge</th>
                 <th>Prix total</th>
-                <th>Statut</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -43,16 +42,15 @@
             <%
                 List<Lavage> historiqueLavages = (List<Lavage>) request.getAttribute("historiqueLavages");
                 if (historiqueLavages != null && !historiqueLavages.isEmpty()) {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+
                     for (model.Lavage lavage : historiqueLavages) {
-                        // On formate la date en YYYY-MM-DD pour que la comparaison avec l'input type="date" soit facile
-                        String dateIso = "";
-                        if(lavage.getDateCommande() != null) {
-                            dateIso = new java.text.SimpleDateFormat("yyyy-MM-dd").format(lavage.getDateCommande());
-                        }
+                        String dateIso = (lavage.getDateCommande() != null) ? sdf.format(lavage.getDateCommande()) : "";
+                        boolean estPaye = "Payé".equalsIgnoreCase(lavage.getStatutPaiement());
             %>
             <tr class="lavage-row"
                 data-date="<%= dateIso %>"
-                data-statut="<%= lavage.getStatut().toLowerCase() %>"
+                data-paiement="<%= estPaye ? "paye" : "non-paye" %>"
                 data-client="<%= lavage.getIdClient().toLowerCase() %>"
                 data-recherche="<%= lavage.getIdLavage().toLowerCase() %> <%= lavage.getIdClient().toLowerCase() %>">
                 <td><%= lavage.getDateFormatee() %></td>
@@ -60,10 +58,9 @@
                 <td><%= lavage.getIdClient() %></td>
                 <td><%= lavage.getQuantiteLinge() %> pcs</td>
                 <td><%= lavage.getPrixFormate() %> Ar</td>
-                <td><span class="badge-status <%= "Annulé".equals(lavage.getStatut()) ? "badge-annule" : "badge-termine" %>"><%= lavage.getStatut() %></span></td>
                 <td>
-                    <% if ("Payé".equals(lavage.getStatutPaiement())) { %>
-                    <span class="text-success fw-bold">Payé</span>
+                    <% if (estPaye) { %>
+                    <span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Payé</span>
                     <% } else { %>
                     <button class="btn btn-action btn-laver" data-id="<%= lavage.getIdLavage() %>" data-action="payer">Payer</button>
                     <% } %>
@@ -74,7 +71,7 @@
             } else {
             %>
             <tr id="emptyRow">
-                <td colspan="7" class="text-center">Aucun historique disponible</td>
+                <td colspan="6" class="text-center">Aucun historique disponible</td>
             </tr>
             <%
                 }
@@ -122,18 +119,16 @@
         const dateFilter = document.getElementById('dateFilter');
         const tableRows = Array.from(document.querySelectorAll('.lavage-row'));
 
-        // Obtenir la date d'aujourd'hui au format YYYY-MM-DD
         const today = new Date();
         const todayIso = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
 
-        let lignesFiltrees = tableRows; // Stocke les lignes qui correspondent aux filtres
+        let lignesFiltrees = tableRows;
 
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
                 filterButtons.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
 
-                // Si on clique sur un bouton, on réinitialise la date manuelle
                 if(this.getAttribute('data-filter') !== 'today') {
                     dateFilter.value = '';
                 }
@@ -143,7 +138,6 @@
 
         searchInput.addEventListener('input', appliquerFiltres);
         dateFilter.addEventListener('change', function() {
-            // Si on choisit une date manuelle, on désactive le bouton "Aujourd'hui"
             filterButtons.forEach(b => b.classList.remove('active'));
             document.querySelector('[data-filter="all"]').classList.add('active');
             appliquerFiltres();
@@ -159,32 +153,29 @@
             tableRows.forEach(row => {
                 let show = true;
 
-                // Filtre par recherche texte
                 if (searchTerm && row.getAttribute('data-recherche')) {
                     if (!row.getAttribute('data-recherche').includes(searchTerm)) {
                         show = false;
                     }
                 }
 
-                // Filtre par date exacte (champ date)
                 if (show && selectedDate) {
                     if (row.getAttribute('data-date') !== selectedDate) {
                         show = false;
                     }
                 }
 
-                // Filtre par boutons (statut ou aujourd'hui)
                 if (show && activeFilter !== 'all') {
-                    const statut = row.getAttribute('data-statut');
+                    const paiement = row.getAttribute('data-paiement');
                     const rowDate = row.getAttribute('data-date');
 
                     if (activeFilter === 'today' && rowDate !== todayIso) {
                         show = false;
                     }
-                    if (activeFilter === 'termine' && statut !== 'prêt à récupérer' && statut !== 'linge récupéré') {
+                    if (activeFilter === 'paye' && paiement !== 'paye') {
                         show = false;
                     }
-                    if (activeFilter === 'annule' && statut !== 'annulé') {
+                    if (activeFilter === 'non-paye' && paiement !== 'non-paye') {
                         show = false;
                     }
                 }
@@ -192,10 +183,9 @@
                 if (show) {
                     lignesFiltrees.push(row);
                 }
-                row.style.display = 'none'; // On cache tout par défaut, la pagination affichera les bonnes
+                row.style.display = 'none';
             });
 
-            // Après avoir filtré, on retourne à la page 1 et on affiche
             pageActuelle = 1;
             afficherPage(1);
         }
@@ -208,7 +198,6 @@
             const totalLignes = lignesFiltrees.length;
             const totalPages = Math.ceil(totalLignes / lignesPerPage);
 
-            // Cacher toutes les lignes filtrées d'abord
             lignesFiltrees.forEach(row => row.style.display = 'none');
 
             if(totalLignes === 0) {
@@ -217,57 +206,56 @@
                 return;
             }
 
-            // Sécurité si la page demandée est hors limites
             if(page > totalPages) page = totalPages;
             if(page < 1) page = 1;
 
             pageActuelle = page;
 
-            // Calculer l'index de début et de fin
             const debut = (page - 1) * lignesPerPage;
             const fin = Math.min(debut + lignesPerPage, totalLignes);
 
-            // Afficher les lignes de la page actuelle
             for (let i = debut; i < fin; i++) {
                 lignesFiltrees[i].style.display = '';
             }
 
-            document.getElementById('infoPagination').innerText = `Affichage de \${debut + 1} à \${fin} sur \${totalLignes} éléments`;
+            // Correction de l'interpolation JS vers la concaténation classique
+            document.getElementById('infoPagination').innerText = "Affichage de " + (debut + 1) + " à " + fin + " sur " + totalLignes + " éléments";
             genererBoutonsPagination(totalPages);
         }
 
         function genererBoutonsPagination(totalPages) {
             const ul = document.getElementById('paginationControls');
-            ul.innerHTML = '';
+            let html = '';
 
-            if(totalPages <= 1) return;
+            if(totalPages <= 1) {
+                ul.innerHTML = '';
+                return;
+            }
 
-            // Bouton Précédent
-            ul.innerHTML += `
-            <li class="page-item \${pageActuelle === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changerPage(\${pageActuelle - 1}); return false;">Précédent</a>
-            </li>
-        `;
+            // Bouton Précédent (Correction avec concaténation)
+            let disabledPrev = (pageActuelle === 1) ? 'disabled' : '';
+            html += '<li class="page-item ' + disabledPrev + '">';
+            html += '<a class="page-link" href="#" onclick="changerPage(' + (pageActuelle - 1) + '); return false;">Précédent</a>';
+            html += '</li>';
 
-            // Numéros de page
             for (let i = 1; i <= totalPages; i++) {
-                // Afficher un maximum de 5 boutons (pour éviter que ça déborde si beaucoup de pages)
                 if (i === 1 || i === totalPages || (i >= pageActuelle - 1 && i <= pageActuelle + 1)) {
-                    ul.innerHTML += `
-                    <li class="page-item \${pageActuelle === i ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changerPage(\${i}); return false;">\${i}</a>
-                    </li>
-                `;
+                    let activeClass = (pageActuelle === i) ? 'active' : '';
+                    html += '<li class="page-item ' + activeClass + '">';
+                    html += '<a class="page-link" href="#" onclick="changerPage(' + i + '); return false;">' + i + '</a>';
+                    html += '</li>';
                 } else if (i === pageActuelle - 2 || i === pageActuelle + 2) {
-                    ul.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                    html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
                 }
             }
 
-            ul.innerHTML += `
-            <li class="page-item \${pageActuelle === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changerPage(\${pageActuelle + 1}); return false;">Suivant</a>
-            </li>
-        `;
+            // Bouton Suivant (Correction avec concaténation)
+            let disabledNext = (pageActuelle === totalPages) ? 'disabled' : '';
+            html += '<li class="page-item ' + disabledNext + '">';
+            html += '<a class="page-link" href="#" onclick="changerPage(' + (pageActuelle + 1) + '); return false;">Suivant</a>';
+            html += '</li>';
+
+            ul.innerHTML = html;
         }
 
         window.changerPage = function(nouvellePage) {

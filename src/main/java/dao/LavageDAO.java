@@ -30,7 +30,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
         lavage.setIdLavage(rs.getString("id_lavage"));
         lavage.setIdClient(rs.getString("id_client"));
 
-        // Conversion du Timestamp SQL vers LocalDateTime Java
         Timestamp tsCommande = rs.getTimestamp("date_commande");
         if (tsCommande != null) {
             lavage.setDateCommande(Timestamp.valueOf(tsCommande.toLocalDateTime()));
@@ -46,7 +45,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
         try {
             lavage.setModeRetrait(rs.getString("mode_retrait"));
         } catch (SQLException ignored) {
-            // Colonne absente si migration_v3 pas encore exécutée
         }
 
         return lavage;
@@ -54,7 +52,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
     @Override
     protected String getRequeteInsert() {
-        // L'identifiant et la date de commande sont gérés par la base de données
         return "INSERT INTO lavage (id_client, statut) VALUES (?, ?)";
     }
 
@@ -74,7 +71,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
         ps.setString(1, objet.getIdClient());
         ps.setString(2, objet.getStatut());
 
-        // Gestion de la date de retrait qui peut être vide (null)
         if (objet.getDateRetrait() != null) {
             ps.setTimestamp(3, Timestamp.valueOf(objet.getDateRetrait().toLocalDateTime()));
         } else {
@@ -84,12 +80,11 @@ public class LavageDAO extends BaseDAO<Lavage> {
         ps.setString(4, objet.getIdLavage());
     }
 
-    // Méthode spécifique pour la page de suivi
     public List<Lavage> getLavagesByClient(String idClient) {
         List<Lavage> liste = new ArrayList<>();
 
         String sql = "SELECT l.*, f.montant_total, f.statut_paiement " +
-                "FROM " + getNomTable() + " l " +
+                "FROM " + this.getNomTable() + " l " +
                 "LEFT JOIN facture f ON l.id_lavage = f.id_lavage " +
                 "WHERE l.id_client = ? " +
                 "ORDER BY l.date_commande DESC";
@@ -101,14 +96,13 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Lavage lavage = mapResultSet(rs);
+                    Lavage lavage = this.mapResultSet(rs);
                     lavage.setMontantTotal(rs.getDouble("montant_total"));
                     lavage.setStatutPaiement(rs.getString("statut_paiement"));
                     liste.add(lavage);
                 }
             }
 
-            // NOUVEAU : On récupère les détails pour chaque lavage trouvé
             String sqlDetails = "SELECT c.nom, d.quantite, d.prix_unitaire " +
                     "FROM detail_lavage d " +
                     "JOIN categorie c ON d.id_categorie = c.id_categorie " +
@@ -135,12 +129,13 @@ public class LavageDAO extends BaseDAO<Lavage> {
             e.printStackTrace();
         }
         return liste;
-    }// Méthode pour récupérer une commande spécifique avec tous ses détails
+    }
+
     public Lavage getLavageCompletById(String idLavage) {
         Lavage lavage = null;
 
         String sql = "SELECT l.*, f.montant_total, f.statut_paiement " +
-                "FROM " + getNomTable() + " l " +
+                "FROM " + this.getNomTable() + " l " +
                 "LEFT JOIN facture f ON l.id_lavage = f.id_lavage " +
                 "WHERE l.id_lavage = ?";
 
@@ -151,13 +146,12 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    lavage = mapResultSet(rs);
+                    lavage = this.mapResultSet(rs);
                     lavage.setMontantTotal(rs.getDouble("montant_total"));
                     lavage.setStatutPaiement(rs.getString("statut_paiement"));
                 }
             }
 
-            // Si le lavage existe, on récupère ses détails (les vêtements)
             if (lavage != null) {
                 String sqlDetails = "SELECT c.nom, d.quantite, d.prix_unitaire " +
                         "FROM detail_lavage d " +
@@ -188,40 +182,60 @@ public class LavageDAO extends BaseDAO<Lavage> {
 
     public List<Lavage> getLingeEnAttenteRecuperation() {
         List<Lavage> liste = new ArrayList<>();
-        String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
+        // Utilisation de COALESCE pour calculer le prix via les détails si la facture n'existe pas encore
+        String sql = "SELECT l.*, " +
+                "COALESCE(f.montant_total, (SELECT SUM(quantite * prix_unitaire) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage), 0) AS montant_total, " +
+                "f.statut_paiement, " +
                 "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
-                "FROM lavage l JOIN recuperation r ON r.id_lavage = l.id_lavage " +
+                "FROM lavage l " +
+                "LEFT JOIN recuperation r ON r.id_lavage = l.id_lavage " +
                 "LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
-                "WHERE l.statut = 'En attente' ORDER BY l.date_commande ASC";
-        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
+                "WHERE l.statut = 'En attente' " +
+                "ORDER BY l.date_commande ASC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
-                Lavage l = mapResultSet(rs);
+                Lavage l = this.mapResultSet(rs);
                 l.setMontantTotal(rs.getDouble("montant_total"));
                 l.setStatutPaiement(rs.getString("statut_paiement"));
                 l.setQuantiteLinge(rs.getInt("qte"));
                 liste.add(l);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return liste;
     }
 
     public List<Lavage> getLingeEnCoursTraitement() {
         List<Lavage> liste = new ArrayList<>();
-        String sql = "SELECT l.*, f.montant_total, f.statut_paiement, " +
+        // Utilisation de COALESCE pour calculer le prix via les détails si la facture n'existe pas encore
+        String sql = "SELECT l.*, " +
+                "COALESCE(f.montant_total, (SELECT SUM(quantite * prix_unitaire) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage), 0) AS montant_total, " +
+                "f.statut_paiement, " +
                 "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
-                "FROM lavage l LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
-                "WHERE l.statut IN ('Linge récupéré', 'En lavage') ORDER BY l.date_commande ASC";
-        try (Connection con = DatabaseConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql);
+                "FROM lavage l " +
+                "LEFT JOIN facture f ON f.id_lavage = l.id_lavage " +
+                "WHERE l.statut IN ('Linge récupéré', 'En lavage') " +
+                "ORDER BY l.date_commande ASC";
+
+        try (Connection con = DatabaseConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
-                Lavage l = mapResultSet(rs);
+                Lavage l = this.mapResultSet(rs);
                 l.setMontantTotal(rs.getDouble("montant_total"));
                 l.setStatutPaiement(rs.getString("statut_paiement"));
                 l.setQuantiteLinge(rs.getInt("qte"));
                 liste.add(l);
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return liste;
     }
 
@@ -244,7 +258,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
     }
 
     public int countEnCours(String idClient) {
-
         String sql = "SELECT COUNT(*) FROM lavage " +
                 "WHERE id_client = ? " +
                 "AND statut IN ('En attente','Linge récupéré','En lavage')";
@@ -266,7 +279,6 @@ public class LavageDAO extends BaseDAO<Lavage> {
     }
 
     public int countTermines(String idClient) {
-
         String sql = "SELECT COUNT(*) FROM lavage " +
                 "WHERE id_client = ? " +
                 "AND statut = 'Prêt à récupérer'";
@@ -293,7 +305,7 @@ public class LavageDAO extends BaseDAO<Lavage> {
                 "(SELECT SUM(quantite) FROM detail_lavage d WHERE d.id_lavage = l.id_lavage) AS qte " +
                 "FROM lavage l " +
                 "JOIN facture f ON l.id_lavage = f.id_lavage " +
-                "WHERE l.statut IN ('Prêt à récupérer', 'Linge récupéré', 'Annulé') " +
+                "WHERE l.statut = 'Prêt à récupérer' " +
                 "ORDER BY l.date_commande DESC";
 
         try (Connection con = DatabaseConnection.getConnection();
@@ -301,7 +313,7 @@ public class LavageDAO extends BaseDAO<Lavage> {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Lavage lavage = mapResultSet(rs);
+                Lavage lavage = this.mapResultSet(rs);
                 lavage.setMontantTotal(rs.getDouble("montant_total"));
                 lavage.setStatutPaiement(rs.getString("statut_paiement"));
                 lavage.setQuantiteLinge(rs.getInt("qte"));
@@ -313,5 +325,4 @@ public class LavageDAO extends BaseDAO<Lavage> {
         }
         return liste;
     }
-
 }

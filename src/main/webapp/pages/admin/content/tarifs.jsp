@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="model.Status" %>
+<%@ page import="utils.HtmlUtils" %>
 <%-- Fragment inclus dans layout.jsp --%>
 
 <div class="topbar">
@@ -23,11 +25,11 @@
                     for (model.Categorie cat : categoriesTarifs) {
             %>
             <tr>
-                <td><%= cat.getNomCategorie() %></td>
+                <td><%= HtmlUtils.escapeHtml(cat.getNomCategorie()) %></td>
                 <td>
                     <div style="display:flex; align-items:center; gap:10px;">
                         <input type="number" min="0" step="1" class="form-control search-box input-prix-vetement"
-                               data-id-tarif="<%= cat.getIdTarif() %>"
+                               data-id-tarif="<%= HtmlUtils.escapeHtml(String.valueOf(cat.getIdTarif())) %>"
                                value="<%= (int) cat.getPrix() %>" style="width: 140px;">
                         <span style="color:#888; font-size:13px;">Ar</span>
                     </div>
@@ -81,19 +83,19 @@
                 java.util.List<model.Utilisateur> livreurs = (java.util.List<model.Utilisateur>) request.getAttribute("livreurs");
                 if (nonAssignees != null && !nonAssignees.isEmpty()) {
                     for (model.LivraisonHistorique h : nonAssignees) {
-                        String type = "Récupération".equals(h.getStatut()) ? "recuperation" : "livraison";
+                                            String type = Status.RECUPERATION.toString().equals(h.getStatut()) ? "recuperation" : "livraison";
             %>
             <tr>
-                <td><%= h.getStatut() %></td>
-                <td><%= h.getIdLavage() %></td>
-                <td><%= h.getTelephone() %></td>
-                <td><%= h.getAdresse() %></td>
+                                    <td><%= HtmlUtils.escapeHtml(h.getStatut()) %></td>
+                                    <td><%= HtmlUtils.escapeHtml(h.getIdLavage()) %></td>
+                                    <td><%= HtmlUtils.escapeHtml(h.getTelephone()) %></td>
+                                    <td><%= HtmlUtils.escapeHtml(h.getAdresse()) %></td>
                 <td><%= h.getDate() != null ? new java.text.SimpleDateFormat("dd/MM/yyyy").format(h.getDate()) : "" %></td>
                 <td>
-                    <select class="form-control search-box select-livreur" data-type="<%= type %>" data-id="<%= h.getIdRecord() %>" style="width: auto; display:inline-block;">
+                                        <select class="form-control search-box select-livreur" data-type="<%= HtmlUtils.escapeHtml(type) %>" data-id="<%= HtmlUtils.escapeHtml(h.getIdRecord()) %>" style="width: auto; display:inline-block;">
                         <option value="" disabled selected>Choisir un livreur</option>
                         <% if (livreurs != null) { for (model.Utilisateur liv : livreurs) { %>
-                        <option value="<%= liv.getIdUtilisateur() %>"><%= liv.getNom() %></option>
+                                            <option value="<%= HtmlUtils.escapeHtml(liv.getIdUtilisateur()) %>"><%= HtmlUtils.escapeHtml(liv.getNom()) %></option>
                         <% } } %>
                     </select>
                 </td>
@@ -111,7 +113,7 @@
     </div>
 
     <div class="card-table" style="margin-bottom: 25px; padding: 20px;">
-        <div class="section-label" style="margin-bottom: 20px; font-weight: bold;">Commissions des livreurs — période du <%= request.getAttribute("dateDebut") %> au <%= request.getAttribute("dateFin") %></div>
+        <div class="section-label" style="margin-bottom: 20px; font-weight: bold;">Commissions des livreurs — période du <%= HtmlUtils.escapeHtml(String.valueOf(request.getAttribute("dateDebut"))) %> au <%= HtmlUtils.escapeHtml(String.valueOf(request.getAttribute("dateFin"))) %></div>
         <table class="table lav-table">
             <thead><tr><th>Livreur</th><th>Nb. courses</th><th>Commission</th></tr></thead>
             <tbody>
@@ -121,7 +123,7 @@
                     for (java.util.Map.Entry<String, double[]> entry : commissions.entrySet()) {
             %>
             <tr>
-                <td><%= entry.getKey() %></td>
+                <td><%= HtmlUtils.escapeHtml(entry.getKey()) %></td>
                 <td><%= (int) entry.getValue()[0] %></td>
                 <td style="text-align:right; font-weight:bold;"><%= utils.Utilitaires.formaterNombre(entry.getValue()[1]) %> Ar</td>
             </tr>

@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/Query-Supabase.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/Query.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/QueryInsert.sql" dialect="PostgreSQL" />
   </component>
 </project>
